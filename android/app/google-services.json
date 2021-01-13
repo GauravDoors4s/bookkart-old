@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "708529425960",
+    "firebase_url": "https://e-book-b4248.firebaseio.com",
+    "project_id": "e-book-b4248",
+    "storage_bucket": "e-book-b4248.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:708529425960:android:f40de6ebfed879ef27ef1d",
+        "android_client_info": {
+          "package_name": "com.iqonic.bookkart"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "708529425960-72kh4deqghjqjer1dq7onfuijlh8f8p1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAbozK6LIEjrtzBW9OZ0_R4QrOA3lcPhtE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "708529425960-72kh4deqghjqjer1dq7onfuijlh8f8p1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
