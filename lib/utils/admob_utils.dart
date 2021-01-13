@@ -1,3 +1,4 @@
+/*
 import 'dart:io';
 import 'Constant.dart';
 
@@ -19,3 +20,4 @@ String getInterstitialAdUnitId() {
   }
   return null;
 }
+*/

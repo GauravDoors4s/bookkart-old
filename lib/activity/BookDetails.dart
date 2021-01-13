@@ -55,7 +55,8 @@ class _BookDetailsState extends State<BookDetails> {
   var mDownloadFileArray = List<Downloads>();
   var mDownloadPaidFileArray = List<Downloads>();
   bool isLoginIn = false;
-  AdmobInterstitial interstitialAd;
+
+/*  AdmobInterstitial interstitialAd;*/
   GlobalKey<ScaffoldState> scaffoldState = GlobalKey();
 
   @override
@@ -63,10 +64,10 @@ class _BookDetailsState extends State<BookDetails> {
     super.initState();
     getBookDetails();
 
-    init();
+    /*  init();*/
   }
 
-  init() async {
+/*  init() async {
     isLoginIn = await getBool(IS_LOGGED_IN);
     interstitialAd = AdmobInterstitial(
       adUnitId: getInterstitialAdUnitId(),
@@ -120,7 +121,7 @@ class _BookDetailsState extends State<BookDetails> {
         break;
       default:
     }
-  }
+  }*/
 
   void showSnackBar(String content) {
     scaffoldState.currentState.showSnackBar(
@@ -136,13 +137,13 @@ class _BookDetailsState extends State<BookDetails> {
     if (mounted) super.setState(fn);
   }
 
-  @override
+/*  @override
   void dispose() async {
     if (await interstitialAd.isLoaded) {
       interstitialAd.show();
     }
     super.dispose();
-  }
+  }*/
 
   Future deleteOrder(orderId) async {
     if (!await isLoggedIn()) {
@@ -216,7 +217,7 @@ class _BookDetailsState extends State<BookDetails> {
 
             await checkoutURLRestApi(requestCheckout).then((res) async {
               setState(() {
-                mFetchingFile = false; 
+                mFetchingFile = false;
               });
               CheckoutResponse checkoutResponse =
                   CheckoutResponse.fromJson(res);
@@ -671,6 +672,7 @@ class _BookDetailsState extends State<BookDetails> {
                             textAlign: TextAlign.center,
                           ),
                         ),
+                        //View files
                         GestureDetector(
                           onTap: () {
                             (mBookDetailsData.isPurchased || mIsFreeBook)
@@ -954,7 +956,9 @@ class _BookDetailsState extends State<BookDetails> {
                                                     children: <Widget>[
                                                       Text(
                                                         mBookDetailsData
-                                                            .store.name.toString().trim(),
+                                                            .store.name
+                                                            .toString()
+                                                            .trim(),
                                                         textAlign:
                                                             TextAlign.start,
                                                         maxLines: 1,
@@ -1264,14 +1268,14 @@ class _BookDetailsState extends State<BookDetails> {
               )
           ],
         ),
-        bottomNavigationBar: Container(
+        /*    bottomNavigationBar: Container(
           width: context.width(),
           color: white,
           child: AdmobBanner(
             adUnitId: getBannerAdUnitId(),
             adSize: AdmobBannerSize.BANNER,
           ).visible(isAdsLoading == true),
-        ),
+        ),*/
       ),
     );
   }
@@ -1350,13 +1354,16 @@ class _BookDetailsState extends State<BookDetails> {
         return SingleChildScrollView(
           primary: false,
           child: Container(
+            color: Colors.red,
             padding: EdgeInsets.only(left: 20, right: 20, bottom: 20),
             child: Column(
               children: <Widget>[
+                // title and close
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
+                    //lebel
                     Container(
                       margin: EdgeInsets.only(
                         top: spacing_standard_new,
@@ -1372,6 +1379,7 @@ class _BookDetailsState extends State<BookDetails> {
                         textAlign: TextAlign.center,
                       ),
                     ),
+                   // close icon
                     GestureDetector(
                       child: Icon(
                         Icons.close,
@@ -1382,12 +1390,15 @@ class _BookDetailsState extends State<BookDetails> {
                     )
                   ],
                 ),
+                // divider
                 Container(
                   margin: EdgeInsets.only(top: spacing_standard_new),
                   height: 2,
                   color: lightGrayColor,
                 ),
+                // file context
                 Container(
+                  color: Colors.green,
                   margin: EdgeInsets.only(top: 20),
                   child: ListView.builder(
                     scrollDirection: Axis.vertical,

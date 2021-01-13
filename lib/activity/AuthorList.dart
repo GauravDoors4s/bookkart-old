@@ -178,10 +178,10 @@ class _AuthorListState extends State<AuthorList> {
           appLoaderWidget.center().visible(mIsLoading),
         ]),
       ),
-      bottomNavigationBar: AdmobBanner(
+/*      bottomNavigationBar: AdmobBanner(
         adUnitId: getBannerAdUnitId(),
         adSize: AdmobBannerSize.BANNER,
-      ).visible(isAdsLoading==true),
+      ).visible(isAdsLoading==true),*/
     );
   }
 }

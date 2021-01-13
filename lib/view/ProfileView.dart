@@ -79,6 +79,7 @@ class _ProfileViewState extends State<ProfileView> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
+              //User information
               Row(
                 children: <Widget>[
                   CircleAvatar(
@@ -97,6 +98,7 @@ class _ProfileViewState extends State<ProfileView> {
                 ],
               ).paddingOnly(left: 20, right: 20, top: 20).visible(isLoginIn),
               10.height,
+              // Account funtion
               mOption(
                 "edit.png",
                 "lbl_edit_profile",

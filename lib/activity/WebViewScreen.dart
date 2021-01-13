@@ -21,7 +21,7 @@ class WebViewScreen extends StatefulWidget {
   @override
   _WebViewScreenState createState() => _WebViewScreenState();
 }
-
+// PAYMENT SCREEN
 class _WebViewScreenState extends State<WebViewScreen> {
   Completer<WebViewController> _controller = Completer<WebViewController>();
   bool mFetchingFile = true;

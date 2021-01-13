@@ -160,10 +160,10 @@ class _AboutUsState extends State<AboutUs> {
                     16.width
                   ],
                 ),
-                AdmobBanner(
+         /*       AdmobBanner(
                   adUnitId: getBannerAdUnitId(),
                   adSize: AdmobBannerSize.BANNER,
-                ).visible(isAdsLoading==true),
+                ).visible(isAdsLoading==true),*/
               ],
             ),
           )),

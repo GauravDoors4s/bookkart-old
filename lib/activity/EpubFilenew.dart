@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:isolate';
 import 'dart:ui';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
@@ -241,7 +240,6 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
     setState(() {
       fullFilePath = filePath;
     });
-
     if (!widget.isPDFFile) {
       EpubViewer.setConfig(
           themeColor: Theme.of(context).primaryColor,
@@ -307,6 +305,7 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
           taskId: _tasks.taskId, shouldDeleteContent: false);
       insertIntoDb(filePath);
       _openDownloadedFile(filePath);
+      print('delete one $filePath');
       setState(() {
         isDownloadFile = true;
       });

@@ -91,6 +91,7 @@ class _DownloadFilesViewState extends State<DownloadFilesView> {
   @override
   Widget build(BuildContext context) {
     final platform = Theme.of(context).platform;
+    // todo bookmarks of book
     return GestureDetector(
       child: Container(
         child: Column(
@@ -136,15 +137,19 @@ class _DownloadFilesViewState extends State<DownloadFilesView> {
                           color: appStore.iconColor,
                         ),
                       8.width,
-                      Expanded(
-                        child: Text(
-                          widget.downloads.name,
-                          textAlign: TextAlign.start,
-                          softWrap: false,
-                          overflow: TextOverflow.fade,
-                          style: TextStyle(
-                            fontSize: fontSizeNormal,
-                            color: appStore.appTextPrimaryColor,
+                      // file name
+                      Container(
+                        color: Colors.yellow,
+                        child: Expanded(
+                          child: Text(
+                            widget.downloads.name,
+                            textAlign: TextAlign.start,
+                            softWrap: false,
+                            overflow: TextOverflow.fade,
+                            style: TextStyle(
+                              fontSize: fontSizeNormal,
+                              color: appStore.appTextPrimaryColor,
+                            ),
                           ),
                         ),
                       )
@@ -172,6 +177,11 @@ class _DownloadFilesViewState extends State<DownloadFilesView> {
           ],
         ),
       ),
+
+
+
+      // todo ontap of file
+
       onTap: () {
         Navigator.of(context).pop();
         if (_isPDFFile) {

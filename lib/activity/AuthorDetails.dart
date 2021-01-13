@@ -173,10 +173,10 @@ class _AuthorDetailsState extends State<AuthorDetails> {
           ],
         ),
       ),
-      bottomNavigationBar: AdmobBanner(
+/*      bottomNavigationBar: AdmobBanner(
         adUnitId: getBannerAdUnitId(),
     adSize: AdmobBannerSize.BANNER,
-    ).visible(isAdsLoading==true),
+    ).visible(isAdsLoading==true),*/
     );
   }
 }
