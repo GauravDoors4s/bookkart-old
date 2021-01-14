@@ -184,6 +184,7 @@ class _DownloadFilesViewState extends State<DownloadFilesView> {
 
       onTap: () {
         Navigator.of(context).pop();
+        //for epub and pdf
         if (_isPDFFile) {
           Navigator.push(
             context,
@@ -198,14 +199,20 @@ class _DownloadFilesViewState extends State<DownloadFilesView> {
                   _isFileExist),
             ),
           );
-        } else if (_isVideoFile) {
+        }
+         // for videofile
+        else if
+        (_isVideoFile) {
           Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => VideoBookPlayer(widget.downloads),
             ),
           );
-        } else if (_isAudioFile) {
+        }
+        // for audiofile
+        else if
+        (_isAudioFile) {
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -216,7 +223,10 @@ class _DownloadFilesViewState extends State<DownloadFilesView> {
               ),
             ),
           );
-        } else if (_isEpubFile) {
+        }
+        // for epubfile
+        else if
+        (_isEpubFile) {
           Navigator.push(
             context,
             MaterialPageRoute(

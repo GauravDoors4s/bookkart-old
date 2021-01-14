@@ -16,6 +16,9 @@ import 'package:epub_viewer/epub_viewer.dart';
 import 'package:flutterapp/utils/utils.dart';
 import 'package:nb_utils/nb_utils.dart';
 import '../main.dart';
+import 'dart:async';
+// import 'package:open_file/open_file.dart';
+// import 'package:dio/dio.dart';
 
 // ignore: must_be_immutable
 class ViewEPubFileNew extends StatefulWidget {
@@ -61,6 +64,10 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
         isDownloadFile = true;
       });
       _openDownloadedFile(filePath);
+      // open in third app
+  /*    String openResult;
+      openFile(openResult);
+      print(openResult);*/
     } else {
       userId = await getInt(USER_ID);
       _bindBackgroundIsolate();
@@ -222,6 +229,8 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
                     ),
                   ),
       ),
+      //added by me
+      floatingActionButton: FloatingActionButton(child: Icon(Icons.bookmark_border_sharp),onPressed: (){},),
     );
   }
 
@@ -239,7 +248,9 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
   Future<bool> _openDownloadedFile(String filePath) async {
     setState(() {
       fullFilePath = filePath;
+
     });
+
     if (!widget.isPDFFile) {
       EpubViewer.setConfig(
           themeColor: Theme.of(context).primaryColor,
@@ -271,6 +282,22 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
       Navigator.of(context).pop();
     }
   }
+
+// open in 3rd app
+
+/*  Future<void> openFile(String openResult) async {
+    // Dio dio = Dio();
+    final filePath1 = '/sdcard/';
+    // final filePath = '/Users/chendong/Downloads/S91010-16435053-221705-o_1dmqeua2a2v2o0u126l1baqqc21e-uid-1817947@1080x2160.jpg';
+    // await dio.download("https://imgsa.baidu.com/exp/w=500/sign=9d6f3ebe35d3d539c13d0fc30a86e927/7aec54e736d12f2eedbdb0204cc2d56285356831.jpg", filePath);
+
+    final result = await OpenFile.open(filePath1);
+
+    setState(() {
+      openResult = "type=${result.type}  message=${result.message}";
+    });
+
+  }*/
 
   Future<String> getTaskId(id) async {
     int userId = await getInt(USER_ID, defaultValue: 0);

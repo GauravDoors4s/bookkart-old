@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_windowmanager/flutter_windowmanager.dart';
+import 'package:flutterapp/activity/local_files.dart';
 import 'package:flutterapp/store/AppStore.dart';
 import 'package:flutterapp/utils/AppTheme.dart';
 import 'package:flutterapp/utils/Constant.dart';
@@ -115,7 +116,7 @@ class _MyAppState extends State<MyApp> {
           theme: !appStore.isDarkModeOn
               ? AppThemeData.lightTheme
               : AppThemeData.darkTheme,
-          home: SplashScreen(),
+          home: LocalFiles(),
           routes: <String, WidgetBuilder>{
             SplashScreen.tag: (BuildContext context) => SplashScreen(),
           },
