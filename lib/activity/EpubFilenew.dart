@@ -209,6 +209,8 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
                           )
                         : SizedBox(),
                   )
+
+        // for pdf
             : !widget.isPDFFile
                 ? SizedBox()
                 : Container(
@@ -248,7 +250,7 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
   Future<bool> _openDownloadedFile(String filePath) async {
     setState(() {
       fullFilePath = filePath;
-
+      print("$filePath  THE SELECTED FILE  PATH******************");
     });
 
     if (!widget.isPDFFile) {
@@ -268,6 +270,7 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
           Map<String, dynamic> r = jsonDecode(locatorPref);
 
           epubLocator = EpubLocator.fromJson(r);
+          print("***Location prefs Are $r ******");
         }
       } on Exception catch (e) {
         epubLocator = EpubLocator();

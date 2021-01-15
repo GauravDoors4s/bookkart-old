@@ -433,7 +433,7 @@ class _BookDetailsState extends State<BookDetails> {
       }
     });
   }
-
+// bookmark
   Future addToBookmark() async {
     if (!await isLoggedIn()) {
       SignInScreen().launch(context);
@@ -1354,7 +1354,7 @@ class _BookDetailsState extends State<BookDetails> {
         return SingleChildScrollView(
           primary: false,
           child: Container(
-            color: Colors.red,
+            // color: Colors.red,
             padding: EdgeInsets.only(left: 20, right: 20, bottom: 20),
             child: Column(
               children: <Widget>[
@@ -1398,7 +1398,7 @@ class _BookDetailsState extends State<BookDetails> {
                 ),
                 // file context
                 Container(
-                  color: Colors.green,
+                  // color: Colors.green,
                   margin: EdgeInsets.only(top: 20),
                   child: ListView.builder(
                     scrollDirection: Axis.vertical,

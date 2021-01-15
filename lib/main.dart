@@ -81,13 +81,25 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-    return ChangeNotifierProvider(
+
+    return
+      MaterialApp(
+      debugShowCheckedModeBanner: false,
+        title: 'BookKart',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+        ),
+        home: LocalFiles(title: 'Files'),
+      );
+/*    ChangeNotifierProvider(
       create: (_) => AppState(widget.language),
       child: Consumer<AppState>(builder: (context, provider, builder) {
         return MaterialApp(
@@ -116,7 +128,8 @@ class _MyAppState extends State<MyApp> {
           theme: !appStore.isDarkModeOn
               ? AppThemeData.lightTheme
               : AppThemeData.darkTheme,
-          home: LocalFiles(),
+            // SplashScreen
+          home: SplashScreen(),
           routes: <String, WidgetBuilder>{
             SplashScreen.tag: (BuildContext context) => SplashScreen(),
           },
@@ -128,7 +141,7 @@ class _MyAppState extends State<MyApp> {
           },
         );
       }),
-    );
+    );*/
   }
 }
 

@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterapp/activity/AudioBookPlayer.dart';
@@ -139,7 +138,7 @@ class _DownloadFilesViewState extends State<DownloadFilesView> {
                       8.width,
                       // file name
                       Container(
-                        color: Colors.yellow,
+                        // color: Colors.yellow,
                         child: Expanded(
                           child: Text(
                             widget.downloads.name,
@@ -188,8 +187,7 @@ class _DownloadFilesViewState extends State<DownloadFilesView> {
         if (_isPDFFile) {
           Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (context) => ViewEPubFileNew(
+            MaterialPageRoute(builder: (context) => ViewEPubFileNew(
                   widget.mBookId,
                   widget.bookName,
                   widget.bookImage,

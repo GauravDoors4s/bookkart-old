@@ -8,7 +8,6 @@ import 'package:flutterapp/utils/app_widget.dart';
 import 'package:flutterapp/utils/utils.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:splash_screen_view/SplashScreenView.dart';
-
 import '../main.dart';
 import 'DashboardActivity.dart';
 import 'Libaryscreen.dart';
@@ -83,9 +82,7 @@ class _SplashScreenState extends State<SplashScreen>
     } else {
       if (isWasConnectionLoss==true) {
         if (isLoginIn) {
-          OfflineScreen(
-            isPopOperation: true,
-          ).launch(context, isNewTask: true);
+          OfflineScreen(isPopOperation: true,).launch(context, isNewTask: true);
         } else {
           NoInternetConnection(isCloseApp: true,).launch(context, isNewTask: true);
         }
