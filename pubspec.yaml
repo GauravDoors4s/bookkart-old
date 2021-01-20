@@ -11,6 +11,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  pdftron_flutter:
+    git:
+      url: git://github.com/PDFTron/pdftron-flutter.git
   flutter_svg: 0.17.4
   flutter_rating_bar: 3.0.1
   flutter_staggered_grid_view: 0.3.1
@@ -60,7 +63,6 @@ dev_dependencies:
   ext_storage: ^1.0.3
   receive_sharing_intent: ^1.4.2
   shared_preferences: ^0.5.12+4
-
 #dependency_overrides:
 #  cached_network_image: 2.5.0
 #  flutter_svg: 0.19.2+1
