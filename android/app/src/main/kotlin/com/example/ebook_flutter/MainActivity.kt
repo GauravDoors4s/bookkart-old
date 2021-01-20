@@ -6,9 +6,9 @@ import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugins.GeneratedPluginRegistrant.registerWith
-
+import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 class MainActivity : FlutterActivity() {
-    private val CHANNEL = "tinyappsteam.flutter.dev/open_file"
+    private val CHANNEL = "fileUrl"
 
     var openPath: String? = null
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
@@ -23,10 +23,15 @@ class MainActivity : FlutterActivity() {
             }
         }
     }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         handleOpenFileUrl(intent)
+        if (intent.getIntExtra("org.chromium.chrome.extra.TASK_ID", -1) == this.taskId) {
+            this.finish()
+            intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        }
+        super.onCreate(savedInstanceState)
     }
 
     override  fun onNewIntent(intent: Intent) {
@@ -40,4 +45,7 @@ class MainActivity : FlutterActivity() {
             openPath = path
         }
     }
+
+
+
 }

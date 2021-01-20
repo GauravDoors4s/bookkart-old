@@ -72,7 +72,9 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
       userId = await getInt(USER_ID);
       _bindBackgroundIsolate();
       FlutterDownloader.registerCallback(downloadCallback);
+/*
       requestPermission();
+*/
     }
     var mCurrentPAgeData = await getInt(PAGE_NUMBER + widget.mBookId);
     print("Page" + mCurrentPAgeData.toString());
@@ -83,7 +85,7 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
     }
   }
 
-  void requestPermission() async {
+/*  void requestPermission() async {
     if (await checkPermission(widget)) {
       _prepare();
     } else {
@@ -93,7 +95,7 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
         _prepare();
       }
     }
-  }
+  }*/
 
   @override
   void dispose() {

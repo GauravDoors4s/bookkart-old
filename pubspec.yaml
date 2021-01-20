@@ -14,7 +14,7 @@ dependencies:
   flutter_svg: 0.17.4
   flutter_rating_bar: 3.0.1
   flutter_staggered_grid_view: 0.3.1
-  permission_handler: 4.4.0
+  permission_handler: ^5.0.1+1
   path_provider: ^1.4.0
   webview_flutter: 0.3.22+1
   intl:
@@ -55,10 +55,13 @@ dev_dependencies:
   mobx_codegen: ^1.1.2
   build_runner: ^1.9.0
   open_file: ^3.0.3
+  epub: ^2.1.0
+  ext_storage: ^1.0.3
+  receive_sharing_intent: ^1.4.2
 
-dependency_overrides:
-  cached_network_image: 2.5.0
-  flutter_svg: 0.19.2+1
+#dependency_overrides:
+#  cached_network_image: 2.5.0
+#  flutter_svg: 0.19.2+1
 
 # The following section is specific to Flutter.
 flutter:
@@ -150,6 +153,7 @@ flutter:
   - lang/tr.json
   - lang/hi.json
   - lang/ar.json
+  - assets/
 
   fonts:
     - family: Roboto

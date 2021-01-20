@@ -79,7 +79,7 @@ class _VideoBookPlayerState extends State<VideoBookPlayer> {
     );
   }
 
-  downloadFile() async {
+/*  downloadFile() async {
     var result =
         await requestPermissionGranted(context, [PermissionGroup.storage]);
     if (result) {
@@ -89,7 +89,7 @@ class _VideoBookPlayerState extends State<VideoBookPlayer> {
     } else {
       Navigator.of(context).pop();
     }
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {

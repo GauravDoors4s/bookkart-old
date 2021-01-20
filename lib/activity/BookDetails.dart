@@ -258,7 +258,7 @@ class _BookDetailsState extends State<BookDetails> {
       },
     );
   }
-
+/*
   Future postPlaceOrder() async {
     if (platform == TargetPlatform.android) {
       var result =
@@ -269,7 +269,7 @@ class _BookDetailsState extends State<BookDetails> {
     } else {
       placeOrder();
     }
-  }
+  }*/
 
   Future postReviewApi(review, rating) async {
     if (!await isLoggedIn()) {
@@ -1623,7 +1623,7 @@ class _BookDetailsState extends State<BookDetails> {
                     )
                   ],
                 ),
-                FittedBox(
+              /*  FittedBox(
                   child: AppButton(
                     value: keyString(context, "lbl_buy_now"),
                     onPressed: () {
@@ -1631,7 +1631,7 @@ class _BookDetailsState extends State<BookDetails> {
                       postPlaceOrder();
                     },
                   ).paddingOnly(top: 16, bottom: 16),
-                )
+                )*/
               ],
             ),
           ),

@@ -1,4 +1,4 @@
-import 'package:flutterapp/utils/utils.dart';
+/*import 'package:flutterapp/utils/utils.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'app_widget.dart';
@@ -31,4 +31,4 @@ Future<bool> requestPermissionGranted(context, requestPermissions) async {
     default:
       return false;
   }
-}
+}*/

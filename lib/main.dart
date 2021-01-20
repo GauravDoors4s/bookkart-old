@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_windowmanager/flutter_windowmanager.dart';
+import 'package:flutterapp/activity/external.dart';
 import 'package:flutterapp/activity/local_files.dart';
 import 'package:flutterapp/store/AppStore.dart';
 import 'package:flutterapp/utils/AppTheme.dart';
@@ -36,6 +39,7 @@ double fontSizeNormal = mobile_font_size_normal;
 AppStore appStore = AppStore();
 
 void main() async {
+
   await FlutterDownloader.initialize();
   WidgetsFlutterBinding.ensureInitialized();
   FlutterError.onError = Crashlytics.instance.recordFlutterError;
@@ -81,7 +85,9 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+/*  static const platform = const MethodChannel('fileUrl');
 
+  String fileUrl = "";*/
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([
@@ -89,17 +95,7 @@ class _MyAppState extends State<MyApp> {
       DeviceOrientation.portraitDown,
     ]);
 
-    return
-      MaterialApp(
-      debugShowCheckedModeBanner: false,
-        title: 'BookKart',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-        ),
-        home: LocalFiles(title: 'Files'),
-      );
-/*    ChangeNotifierProvider(
+    return /*fileUrl == null ?   */ChangeNotifierProvider(
       create: (_) => AppState(widget.language),
       child: Consumer<AppState>(builder: (context, provider, builder) {
         return MaterialApp(
@@ -128,7 +124,7 @@ class _MyAppState extends State<MyApp> {
           theme: !appStore.isDarkModeOn
               ? AppThemeData.lightTheme
               : AppThemeData.darkTheme,
-            // SplashScreen
+          // SplashScreen
           home: SplashScreen(),
           routes: <String, WidgetBuilder>{
             SplashScreen.tag: (BuildContext context) => SplashScreen(),
@@ -141,6 +137,15 @@ class _MyAppState extends State<MyApp> {
           },
         );
       }),
+    );
+  /*  MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'BookKart',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
+      home: LocalFiles(title: 'files',),
     );*/
   }
 }

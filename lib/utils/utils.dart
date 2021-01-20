@@ -23,7 +23,7 @@ Future<bool> isLoggedIn() async {
 Future clearSearchHistory() async {
   await setString(SEARCH_TEXT, "");
 }
-
+/*
 Future<bool> checkPermission(widget) async {
   if (widget.platform == TargetPlatform.android) {
     PermissionStatus permission = await PermissionHandler()
@@ -42,7 +42,7 @@ Future<bool> checkPermission(widget) async {
     return true;
   }
   return false;
-}
+}*/
 
 Future<String> getBookFilePath(String bookId, String url,
     {isSampleFile = false}) async {
