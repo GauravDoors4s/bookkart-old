@@ -87,6 +87,7 @@ class _DownloadFilesViewState extends State<DownloadFilesView> {
     }
   }
 
+
   @override
   Widget build(BuildContext context) {
     final platform = Theme.of(context).platform;
@@ -194,7 +195,7 @@ class _DownloadFilesViewState extends State<DownloadFilesView> {
                   widget.downloads,
                   platform,
                   true,
-                  _isFileExist),
+                  _isFileExist,''),
             ),
           );
         }
@@ -235,7 +236,7 @@ class _DownloadFilesViewState extends State<DownloadFilesView> {
                   widget.downloads,
                   platform,
                   false,
-                  _isFileExist),
+                  _isFileExist,''),
             ),
           );
         } else {

@@ -17,6 +17,7 @@ import 'package:flutterapp/utils/utils.dart';
 import 'package:nb_utils/nb_utils.dart';
 import '../main.dart';
 import 'dart:async';
+
 // import 'package:open_file/open_file.dart';
 // import 'package:dio/dio.dart';
 
@@ -28,9 +29,10 @@ class ViewEPubFileNew extends StatefulWidget {
   final TargetPlatform platform;
   bool isPDFFile = false;
   bool _isFileExist = false;
+ String bookMark;
 
   ViewEPubFileNew(this.mBookId, this.mBookName, this.mBookImage, this.downloads,
-      this.platform, this.isPDFFile, this._isFileExist);
+      this.platform, this.isPDFFile, this._isFileExist, this.bookMark);
 
   @override
   ViewEPubFileNewState createState() => ViewEPubFileNewState();
@@ -49,10 +51,13 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
   DownloadedBook mBookDownloadTask;
   int currentPage = 0;
 
+
+
   @override
   void initState() {
     super.initState();
     initialDownload();
+    getBookmark();
   }
 
   // ignore: missing_return
@@ -64,20 +69,18 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
         isDownloadFile = true;
       });
       _openDownloadedFile(filePath);
-      // open in third app
-  /*    String openResult;
+      // open in third app by me
+      /*    String openResult;
       openFile(openResult);
       print(openResult);*/
     } else {
       userId = await getInt(USER_ID);
       _bindBackgroundIsolate();
       FlutterDownloader.registerCallback(downloadCallback);
-/*
       requestPermission();
-*/
     }
     var mCurrentPAgeData = await getInt(PAGE_NUMBER + widget.mBookId);
-    print("Page" + mCurrentPAgeData.toString());
+    print("Page Saved : " + mCurrentPAgeData.toString());
     if (mCurrentPAgeData != null && mCurrentPAgeData.toString().isNotEmpty) {
       currentPage = mCurrentPAgeData;
     } else {
@@ -85,7 +88,7 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
     }
   }
 
-/*  void requestPermission() async {
+  void requestPermission() async {
     if (await checkPermission(widget)) {
       _prepare();
     } else {
@@ -95,7 +98,7 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
         _prepare();
       }
     }
-  }*/
+  }
 
   @override
   void dispose() {
@@ -151,9 +154,10 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
         IsolateNameServer.lookupPortByName('downloader_send_port');
     send.send([id, status, progress]);
   }
-
+  bool pressed = false;
   @override
   Widget build(BuildContext context) {
+
     return new Scaffold(
       backgroundColor: appStore.scaffoldBackground,
       appBar: appBar(context, title: widget.downloads.name),
@@ -212,7 +216,7 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
                         : SizedBox(),
                   )
 
-        // for pdf
+            // for pdf
             : !widget.isPDFFile
                 ? SizedBox()
                 : Container(
@@ -229,13 +233,44 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
                         });
                       },
                       defaultPage: currentPage,
-
                     ),
                   ),
       ),
-      //added by me
-      floatingActionButton: FloatingActionButton(child: Icon(Icons.bookmark_border_sharp),onPressed: (){},),
+
+      //bookmark page
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: appStore.scaffoldBackground,
+        /*child: ,*/
+        child: pressed ? Text(widget.bookMark,style: TextStyle(color: Colors.black),):Icon(Icons.bookmark_border_sharp),
+        onPressed: () {
+
+          setState(() {
+            pressed = true;
+            widget.bookMark = currentPage.toString();
+            saveBookmark();
+          });
+          print('${widget.bookMark} page no bookmark Saved');
+          print('$pressed bool value bookmark Saved');
+        },
+      ),
     );
+  }
+   saveBookmark() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('pageBookmark',widget.bookMark );
+    prefs.setString('bookId', widget.mBookId );
+    prefs.setBool('boolVal',pressed );
+    print('page marked method run and saved');
+  }
+
+  getBookmark() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    widget.bookMark = prefs.getString('pageBookmark');
+    widget.mBookId = prefs.getString('bookId');
+     pressed = prefs.getBool('boolVal');
+    print('${widget.bookMark} prefs value----> bookmark Saved');
+    print('${widget.mBookId}  prefs BOOk Id ----> bookmark Saved');
+    print('$pressed prefs bool value----> bookmark Saved');
   }
 
   void _resumeDownload(_TaskInfo task) async {
@@ -288,7 +323,7 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
     }
   }
 
-// open in 3rd app
+// open in 3rd app by me
 
 /*  Future<void> openFile(String openResult) async {
     // Dio dio = Dio();

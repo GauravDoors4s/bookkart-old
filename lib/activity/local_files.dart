@@ -45,14 +45,14 @@ class _LocalFilesState extends State<LocalFiles> with WidgetsBindingObserver {
     super.initState();
     extStroageUrl();
     splitJoinUrl();
-    requestPermission();
+    // requestPermission();
     getOpenFileUrl();
 
     // Listen to lifecycle events.
 
   }
 
-  requestPermission() async {
+/*  requestPermission() async {
     var status = await Permission.storage.status;
     if (status.isUndetermined) {
       // You can request multiple permissions at once.
@@ -100,7 +100,7 @@ class _LocalFilesState extends State<LocalFiles> with WidgetsBindingObserver {
     } else if (status.isRestricted) {
       debugPrint("status is restricted");
     }
-  }
+  }*/
 
   @override
   void dispose() {
