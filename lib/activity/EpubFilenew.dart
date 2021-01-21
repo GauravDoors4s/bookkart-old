@@ -18,7 +18,7 @@ import 'package:nb_utils/nb_utils.dart';
 import '../main.dart';
 import 'dart:async';
 import 'package:flutter/services.dart';
-import 'package:pdftron_flutter/pdftron_flutter.dart';
+// import 'package:pdftron_flutter/pdftron_flutter.dart';
 
 // import 'package:open_file/open_file.dart';
 // import 'package:dio/dio.dart';
@@ -53,19 +53,20 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
   DownloadedBook mBookDownloadTask;
   int currentPage = 0;
   bool _showViewer = true;
-  String _document =
-      "https://pdftron.s3.amazonaws.com/downloads/pl/PDFTRON_mobile_about.pdf";
   String _version = 'Unknown';
+  String _document =
+      "https://rise.esmap.org/data/files/webform/pdf-harry-potter-and-the-order-of-the-phoenix-book-5-jk-rowling-pdf-download-free-book-beb8863.pdf";
+
   String filePath;
   @override
   void initState() {
     super.initState();
-    initialDownload();
-    initPlatformState();
-    showViewer();
+     initialDownload();
+    // initPlatformState();
+    // showViewer();
   /*  getBookmark();*/
   }
-  Future<void> initPlatformState() async {
+ /* Future<void> initPlatformState() async {
     String version;
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
@@ -83,8 +84,8 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
     setState(() {
       _version = version;
     });
-  }
-
+  }*/
+/*
   void showViewer() async {
     // opening without a config file will have all functionality enabled.
     // await PdftronFlutter.openDocument(_document);
@@ -141,8 +142,11 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
     // to cancel event:
     // annotCancel();
     // bookmarkCancel();
-  }
+  }*/
   // ignore: missing_return
+
+
+
   Future initialDownload() async {
     if (widget._isFileExist) {
       filePath =
@@ -151,15 +155,12 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
         isDownloadFile = true;
       });
       _openDownloadedFile(filePath);
-      // open in third app by me
-      /*    String openResult;
-      openFile(openResult);
-      print(openResult);*/
+
     } else {
       userId = await getInt(USER_ID);
       _bindBackgroundIsolate();
       FlutterDownloader.registerCallback(downloadCallback);
-      requestPermission();
+      // requestPermission();
     }
     var mCurrentPAgeData = await getInt(PAGE_NUMBER + widget.mBookId);
     print("Page Saved : " + mCurrentPAgeData.toString());
@@ -170,7 +171,7 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
     }
   }
 
-  void requestPermission() async {
+/*  void requestPermission() async {
     if (await checkPermission(widget)) {
       _prepare();
     } else {
@@ -180,13 +181,14 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
         _prepare();
       }
     }
-  }
+  }*/
 
   @override
   void dispose() {
     _unbindBackgroundIsolate();
     super.dispose();
   }
+
 
   void _bindBackgroundIsolate() async {
     bool isSuccess = IsolateNameServer.registerPortWithName(
@@ -230,13 +232,16 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
     IsolateNameServer.removePortNameMapping('downloader_send_port');
   }
 
-  static void downloadCallback(
-      String id, DownloadTaskStatus status, int progress) {
+  static void downloadCallback(String id, DownloadTaskStatus status, int progress) {
     final SendPort send =
         IsolateNameServer.lookupPortByName('downloader_send_port');
     send.send([id, status, progress]);
   }
-  bool pressed = false;
+
+  // for bookmark button
+  // bool pressed = false;
+
+
   @override
   Widget build(BuildContext context) {
 
@@ -301,7 +306,7 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
             // for pdf
             : !widget.isPDFFile
                 ? SizedBox()
-                : /*Container(
+                : Container(
                     height: MediaQuery.of(context).size.height * 0.85,
                     child: PDFView(
                       filePath: fullFilePath,
@@ -316,8 +321,8 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
                       },
                       defaultPage: currentPage,
                     ),
-                  ),*/
-        Container(
+                  ),
+       /* Container(
           width: double.infinity,
           height: double.infinity,
           child:
@@ -326,8 +331,10 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
               ? DocumentView(
             onCreated: _onDocumentViewCreated,
           ):
-          Container(),
-        ),
+          Container(
+            child: Text('invalid file / not processing it'),
+          ),
+        ),*/
 
 
       ),
@@ -367,22 +374,24 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
     print('${widget.mBookId}  prefs BOOk Id ----> bookmark Saved');
     print('$pressed prefs bool value----> bookmark Saved');
   }*/
-  void _onDocumentViewCreated(DocumentViewController controller) async {
-    Config config = new Config();
 
-    var leadingNavCancel = startLeadingNavButtonPressedListener(() {
-      // Uncomment this to quit the viewer when leading navigation button is pressed
-      this.setState(() {
-        _showViewer = !_showViewer;
-      });
-
-      // Show a dialog when leading navigation button is pressed
-      _showMyDialog();
-    });
-
-    controller.openDocument(_document, config: config);
-  }
-  Future<void> _showMyDialog() async {
+  //
+  // void _onDocumentViewCreated(DocumentViewController controller) async {
+  //   Config config = new Config();
+  //
+  //   var leadingNavCancel = startLeadingNavButtonPressedListener(() {
+  //     // Uncomment this to quit the viewer when leading navigation button is pressed
+  //     this.setState(() {
+  //       _showViewer = !_showViewer;
+  //     });
+  //
+  //     // Show a dialog when leading navigation button is pressed
+  //     _showMyDialog();
+  //   });
+  //
+  //   controller.openDocument(_document, config: config);
+  // }
+ /* Future<void> _showMyDialog() async {
     print('hello');
     return showDialog<void>(
       context: context,
@@ -404,7 +413,7 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
         );
       },
     );
-  }
+  }*/
   void _resumeDownload(_TaskInfo task) async {
     String newTaskId = await FlutterDownloader.resume(taskId: task.taskId);
     task.taskId = newTaskId;

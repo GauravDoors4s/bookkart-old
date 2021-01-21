@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutterapp/utils/utils.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:epub_viewer/epub_viewer.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -12,11 +13,14 @@ import '../activity/EpubFilenew.dart';
 import '../activity/VideoBookPlayer.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:flutterapp/utils/Constant.dart';
-
+import 'package:flutterapp/utils/AppPermissionHandler.dart';
+import 'package:permission_handler/permission_handler.dart';
 // ignore: must_be_immutable
 class LocalFiles extends StatefulWidget {
   String mBookId, mBookName, mBookImage;
-  LocalFiles({Key key, this.title}) : super(key: key);
+  var platform;
+
+  LocalFiles({Key key, this.title, this.platform}) : super(key: key);
 
   String title;
 
@@ -45,14 +49,16 @@ class _LocalFilesState extends State<LocalFiles> with WidgetsBindingObserver {
     super.initState();
     extStroageUrl();
     splitJoinUrl();
-    // requestPermission();
-    getOpenFileUrl();
+    requestPermission();
 
     // Listen to lifecycle events.
-
   }
 
-/*  requestPermission() async {
+
+
+
+// v5 of permissions handler
+  requestPermission() async {
     var status = await Permission.storage.status;
     if (status.isUndetermined) {
       // You can request multiple permissions at once.
@@ -100,7 +106,7 @@ class _LocalFilesState extends State<LocalFiles> with WidgetsBindingObserver {
     } else if (status.isRestricted) {
       debugPrint("status is restricted");
     }
-  }*/
+  }
 
   @override
   void dispose() {
@@ -144,10 +150,10 @@ class _LocalFilesState extends State<LocalFiles> with WidgetsBindingObserver {
     dynamic fileUrl = await platform.invokeMethod("getOpenFileUrl");
     /* var path = await ExtStorage.getExternalStorageDirectory();
     print(path);*/
-     print('$fileUrl intent path');
+    print('$fileUrl intent path');
 
     String rawUrl = fileUrl.toString();
- /*   if (rawUrl.startsWith("/document/1EED-1E08:") ||
+    /*   if (rawUrl.startsWith("/document/1EED-1E08:") ||
         rawUrl.startsWith("/document/msf:31")) {
       final List<String> split = rawUrl.split(":");
       print('"$split "split one');
@@ -157,7 +163,6 @@ class _LocalFilesState extends State<LocalFiles> with WidgetsBindingObserver {
       // finalString = "/storage/1EED-1E08/$endString";
       print('"$finalString "final path');
     }*/
-
 
     rawUrl = rawUrl.replaceAll(":", "/");
     finalString = rawUrl.replaceAll('/document/', '/storage/');
@@ -170,8 +175,6 @@ class _LocalFilesState extends State<LocalFiles> with WidgetsBindingObserver {
         // openFileUrl = 'assets/pot.epub';
         openFileUrl = finalString;
       });
-
-
 
       WidgetsBinding.instance.addObserver(this);
       // finalString = getOpenFileUrl.toString();
@@ -188,9 +191,7 @@ class _LocalFilesState extends State<LocalFiles> with WidgetsBindingObserver {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => VideoBookPlayer(
-                openFileUrl
-            ),
+            builder: (context) => VideoBookPlayer(openFileUrl),
           ),
         );
       } else if (filename.contains(".mp3") || filename.contains(".flac")) {
@@ -199,7 +200,6 @@ class _LocalFilesState extends State<LocalFiles> with WidgetsBindingObserver {
           MaterialPageRoute(
             builder: (context) => AudioBookPlayer(
               url: openFileUrl,
-
             ),
           ),
         );
@@ -208,18 +208,11 @@ class _LocalFilesState extends State<LocalFiles> with WidgetsBindingObserver {
       } else if (filename.contains(".epub")) {
         openEpub();
         // _isEpubFile = true;
-      } /*else {
+      }
+      /*else {
       // _isFileExist = true;
       // _isDefaultFile = true;
     }*/
-
-
-
-
-
-
-
-
 
 // for epub
 /*
@@ -257,7 +250,7 @@ class _LocalFilesState extends State<LocalFiles> with WidgetsBindingObserver {
       ); */
 
 /*       if (_isPDFFile) {
-  *//*      Navigator.push(
+  */ /*      Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => ViewEPubFileNew(
           'id','NAME','',openFileUrl,
@@ -266,7 +259,7 @@ class _LocalFilesState extends State<LocalFiles> with WidgetsBindingObserver {
             _isFileExist
               ),
           ),
-        );*//*
+        );*/ /*
 
          openPdf();
       }
@@ -306,22 +299,22 @@ class _LocalFilesState extends State<LocalFiles> with WidgetsBindingObserver {
   }
 
   void openPdf() {
-     PDFView(
-         filePath: fileUrl,
-         pageSnap: false,
-         swipeHorizontal: true,
-         onPageChanged: (int page, int total) {
-           print('****** $fileUrl  *******  IN PDF HERE');
-           print('page change: $page/$total');
-           setInt(PAGE_NUMBER + widget.mBookId.toString(), page);
-           setState(() {
-             currentPage = page;
-           });
-         },
-         defaultPage: currentPage,
-
-       );
+    PDFView(
+      filePath: fileUrl,
+      pageSnap: false,
+      swipeHorizontal: true,
+      onPageChanged: (int page, int total) {
+        print('****** $fileUrl  *******  IN PDF HERE');
+        print('page change: $page/$total');
+        setInt(PAGE_NUMBER + widget.mBookId.toString(), page);
+        setState(() {
+          currentPage = page;
+        });
+      },
+      defaultPage: currentPage,
+    );
   }
+
   Future<void> openEpub() async {
     EpubViewer.setConfig(
         themeColor: Theme.of(context).primaryColor,

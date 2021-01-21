@@ -13,7 +13,7 @@ import 'package:flutterapp/utils/admob_utils.dart';
 import 'package:flutterapp/utils/app_widget.dart';
 import 'package:flutterapp/utils/utils.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:admob_flutter/admob_flutter.dart';
+// import 'package:admob_flutter/admob_flutter.dart';
 import '../main.dart';
 import 'AuthorDetails.dart';
 import 'ErrorView.dart';

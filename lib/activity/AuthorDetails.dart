@@ -15,7 +15,7 @@ import '../main.dart';
 import 'BookDetails.dart';
 import 'ErrorView.dart';
 import 'NoInternetConnection.dart';
-import 'package:admob_flutter/admob_flutter.dart';
+// import 'package:admob_flutter/admob_flutter.dart';
 
 // ignore: must_be_immutable
 class AuthorDetails extends StatefulWidget {

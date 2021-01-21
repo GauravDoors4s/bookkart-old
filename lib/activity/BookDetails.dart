@@ -30,7 +30,7 @@ import 'NoInternetConnection.dart';
 import 'SignInScreen.dart';
 import 'ViewAllBooks.dart';
 import 'WebViewScreen.dart';
-import 'package:admob_flutter/admob_flutter.dart';
+// import 'package:admob_flutter/admob_flutter.dart';
 
 // ignore: must_be_immutable
 class BookDetails extends StatefulWidget {
@@ -258,11 +258,11 @@ class _BookDetailsState extends State<BookDetails> {
       },
     );
   }
-/*
-  Future postPlaceOrder() async {
+
+
+/*  Future postPlaceOrder() async {
     if (platform == TargetPlatform.android) {
-      var result =
-          await requestPermissionGranted(context, [PermissionGroup.storage]);
+      var result = await requestPermissionGranted(context, [PermissionGroup.storage]);
       if (result) {
         placeOrder();
       }
