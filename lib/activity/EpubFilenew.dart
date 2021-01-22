@@ -18,7 +18,7 @@ import 'package:nb_utils/nb_utils.dart';
 import '../main.dart';
 import 'dart:async';
 import 'package:flutter/services.dart';
-// import 'package:pdftron_flutter/pdftron_flutter.dart';
+import 'package:pdftron_flutter/pdftron_flutter.dart';
 
 // import 'package:open_file/open_file.dart';
 // import 'package:dio/dio.dart';
@@ -62,11 +62,11 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
   void initState() {
     super.initState();
      initialDownload();
-    // initPlatformState();
+    initPlatformState();
     // showViewer();
   /*  getBookmark();*/
   }
- /* Future<void> initPlatformState() async {
+  Future<void> initPlatformState() async {
     String version;
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
@@ -84,7 +84,7 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
     setState(() {
       _version = version;
     });
-  }*/
+  }
 /*
   void showViewer() async {
     // opening without a config file will have all functionality enabled.
@@ -145,8 +145,6 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
   }*/
   // ignore: missing_return
 
-
-
   Future initialDownload() async {
     if (widget._isFileExist) {
       filePath =
@@ -160,7 +158,7 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
       userId = await getInt(USER_ID);
       _bindBackgroundIsolate();
       FlutterDownloader.registerCallback(downloadCallback);
-      // requestPermission();
+      requestPermission();
     }
     var mCurrentPAgeData = await getInt(PAGE_NUMBER + widget.mBookId);
     print("Page Saved : " + mCurrentPAgeData.toString());
@@ -170,8 +168,7 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
       currentPage = 0;
     }
   }
-
-/*  void requestPermission() async {
+  void requestPermission() async {
     if (await checkPermission(widget)) {
       _prepare();
     } else {
@@ -181,7 +178,7 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
         _prepare();
       }
     }
-  }*/
+  }
 
   @override
   void dispose() {
@@ -306,7 +303,7 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
             // for pdf
             : !widget.isPDFFile
                 ? SizedBox()
-                : Container(
+                : /*Container(
                     height: MediaQuery.of(context).size.height * 0.85,
                     child: PDFView(
                       filePath: fullFilePath,
@@ -321,7 +318,9 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
                       },
                       defaultPage: currentPage,
                     ),
-                  ),
+                  ),*/
+
+          PdftronFlutter.openDocument(fullFilePath),
        /* Container(
           width: double.infinity,
           height: double.infinity,
@@ -375,7 +374,7 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
     print('$pressed prefs bool value----> bookmark Saved');
   }*/
 
-  //
+
   // void _onDocumentViewCreated(DocumentViewController controller) async {
   //   Config config = new Config();
   //
@@ -389,9 +388,9 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
   //     _showMyDialog();
   //   });
   //
-  //   controller.openDocument(_document, config: config);
+  //   controller.openDocument(fullFilePath, config: config);
   // }
- /* Future<void> _showMyDialog() async {
+  Future<void> _showMyDialog() async {
     print('hello');
     return showDialog<void>(
       context: context,
@@ -413,7 +412,7 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
         );
       },
     );
-  }*/
+  }
   void _resumeDownload(_TaskInfo task) async {
     String newTaskId = await FlutterDownloader.resume(taskId: task.taskId);
     task.taskId = newTaskId;
@@ -531,6 +530,9 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
     }
   }
 
+ /*
+    ------------------
+*/
   void insertIntoDb(filePath) async {
     /**
      * Store data to db for offline usage

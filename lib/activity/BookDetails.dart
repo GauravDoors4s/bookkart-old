@@ -9,6 +9,7 @@ import 'package:flutterapp/adapterView/DownloadFilesView.dart';
 import 'package:flutterapp/adapterView/Review.dart';
 import 'package:flutterapp/adapterView/UpsellBookList.dart';
 import 'package:flutterapp/app_localizations.dart';
+import 'package:flutterapp/confi/application.dart';
 import 'package:flutterapp/main.dart';
 import 'package:flutterapp/model/AddtoBookmarkResponse.dart';
 import 'package:flutterapp/model/CheckoutResponse.dart';
@@ -260,16 +261,12 @@ class _BookDetailsState extends State<BookDetails> {
   }
 
 
-/*  Future postPlaceOrder() async {
+  Future postPlaceOrder() async {
     if (platform == TargetPlatform.android) {
-      var result = await requestPermissionGranted(context, [PermissionGroup.storage]);
-      if (result) {
-        placeOrder();
-      }
-    } else {
-      placeOrder();
+ ApplicationGlobal.requestPermission(() { placeOrder(); });
     }
-  }*/
+
+  }
 
   Future postReviewApi(review, rating) async {
     if (!await isLoggedIn()) {

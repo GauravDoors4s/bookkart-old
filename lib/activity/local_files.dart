@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutterapp/confi/application.dart';
 import 'package:flutterapp/utils/utils.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:epub_viewer/epub_viewer.dart';
@@ -15,6 +16,7 @@ import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:flutterapp/utils/Constant.dart';
 import 'package:flutterapp/utils/AppPermissionHandler.dart';
 import 'package:permission_handler/permission_handler.dart';
+
 // ignore: must_be_immutable
 class LocalFiles extends StatefulWidget {
   String mBookId, mBookName, mBookImage;
@@ -49,16 +51,15 @@ class _LocalFilesState extends State<LocalFiles> with WidgetsBindingObserver {
     super.initState();
     extStroageUrl();
     splitJoinUrl();
-    requestPermission();
-
+    // requestPermission();
+    ApplicationGlobal.requestPermission(() {
+      getOpenFileUrl();
+    });
     // Listen to lifecycle events.
   }
 
-
-
-
 // v5 of permissions handler
-  requestPermission() async {
+/*  requestPermission() async {
     var status = await Permission.storage.status;
     if (status.isUndetermined) {
       // You can request multiple permissions at once.
@@ -106,7 +107,7 @@ class _LocalFilesState extends State<LocalFiles> with WidgetsBindingObserver {
     } else if (status.isRestricted) {
       debugPrint("status is restricted");
     }
-  }
+  }*/
 
   @override
   void dispose() {
@@ -140,10 +141,14 @@ class _LocalFilesState extends State<LocalFiles> with WidgetsBindingObserver {
       ),
     );
   }
+/*void checkUrl(){
 
+
+}*/
   Future<String> extStroageUrl() async {
     path = await ExtStorage.getExternalStorageDirectory();
-    print('$path here is path '); // /storage/emulated/0
+    print('$path here is path ');// /storage/emulated/0
+
   }
 
   void splitJoinUrl() async {

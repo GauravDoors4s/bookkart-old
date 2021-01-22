@@ -14,7 +14,7 @@ import 'package:flutterapp/store/AppStore.dart';
 import 'package:flutterapp/utils/AppTheme.dart';
 import 'package:flutterapp/utils/Constant.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:onesignal_flutter/onesignal_flutter.dart';
+// import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:provider/provider.dart';
 import 'activity/SplashScreen.dart';
 import 'app_localizations.dart';
@@ -46,18 +46,18 @@ void main() async {
   appStore.toggleDarkMode(value: await getBool(isDarkModeOnPref));
 
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  OneSignal.shared.setLogLevel(OSLogLevel.verbose, OSLogLevel.none);
+/*  OneSignal.shared.setLogLevel(OSLogLevel.verbose, OSLogLevel.none);
   await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
   OneSignal.shared.init(ONESIGNAL_ID, iOSSettings: {
     OSiOSSettings.autoPrompt: false,
     OSiOSSettings.inAppLaunchUrl: false
-  });
+  });*/
 
-  OneSignal.shared
+/*  OneSignal.shared
       .setInFocusDisplayType(OSNotificationDisplayType.notification);
 
   await OneSignal.shared
-      .promptUserForPushNotificationPermission(fallbackToSettings: true);
+      .promptUserForPushNotificationPermission(fallbackToSettings: true);*/
 
   var pref = await getSharedPref();
   var language;
