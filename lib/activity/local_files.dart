@@ -16,10 +16,13 @@ import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:flutterapp/utils/Constant.dart';
 import 'package:flutterapp/utils/AppPermissionHandler.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:pdftron_flutter/pdftron_flutter.dart';
 
 // ignore: must_be_immutable
 class LocalFiles extends StatefulWidget {
   String mBookId, mBookName, mBookImage;
+  String bookImage = "";
+  String bookName = "";
   var platform;
 
   LocalFiles({Key key, this.title, this.platform}) : super(key: key);
@@ -50,8 +53,8 @@ class _LocalFilesState extends State<LocalFiles> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     extStroageUrl();
-    splitJoinUrl();
-    // requestPermission();
+    splitJoinExUrl();
+    // requestPermission();f
     ApplicationGlobal.requestPermission(() {
       getOpenFileUrl();
     });
@@ -124,7 +127,7 @@ class _LocalFilesState extends State<LocalFiles> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+   /* return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -133,25 +136,52 @@ class _LocalFilesState extends State<LocalFiles> with WidgetsBindingObserver {
           style: TextStyle(color: Colors.black),
         ),
       ),
-      body: Container(
+      body:
+      Container(
         //   color: Colors.yellow,
         child: Center(
             child: Text(
                 "file: " + (openFileUrl != null ? openFileUrl : "Nothing!"))),
       ),
+    );*/
+    return Container(
+
     );
   }
-/*void checkUrl(){
 
+  void checkUrl() {}
 
-}*/
   Future<String> extStroageUrl() async {
     path = await ExtStorage.getExternalStorageDirectory();
-    print('$path here is path ');// /storage/emulated/0
-
+    print('$path here is path '); // /storage/emulated/0
   }
 
-  void splitJoinUrl() async {
+  // internal url work
+/*  void splitJoinInUrl() async {
+    dynamic fileUrl = await platform.invokeMethod("getOpenFileUrl");
+    */ /* var path = await ExtStorage.getExternalStorageDirectory();
+    print(path);*/ /*
+    print('$fileUrl intent path');
+
+    String rawUrl = fileUrl.toString();
+    if (rawUrl.startsWith("/document/msf:31")) {
+      final List<String> split = rawUrl.split(":");
+      print('"$split "split one');
+      endString = split.skip(1).join('');
+      print('"$endString "after split');
+      // finalString = "$path/$endString";
+      // finalString = "/storage/1EED-1E08/$endString";
+      finalString = "/storage/msf/24/download/pot.epub";
+      print('"$finalString "final path');
+    }
+
+*/ /*    rawUrl = rawUrl.replaceAll(":", "/");
+    finalString = rawUrl.replaceAll('/document/', '/storage/');
+    print('"$finalString "final path');*/ /*
+  }*/
+
+  // external url work
+  void splitJoinExUrl() async {
     dynamic fileUrl = await platform.invokeMethod("getOpenFileUrl");
     /* var path = await ExtStorage.getExternalStorageDirectory();
     print(path);*/
@@ -171,6 +201,7 @@ class _LocalFilesState extends State<LocalFiles> with WidgetsBindingObserver {
 
     rawUrl = rawUrl.replaceAll(":", "/");
     finalString = rawUrl.replaceAll('/document/', '/storage/');
+    // finalString = "/storage/msf/24/download/pot.epub";
     print('"$finalString "final path');
   }
 
@@ -178,6 +209,7 @@ class _LocalFilesState extends State<LocalFiles> with WidgetsBindingObserver {
     if (finalString != null && finalString != openFileUrl) {
       setState(() {
         // openFileUrl = 'assets/pot.epub';
+        // openFileUrl = '$path/Downloads/pot.epub';
         openFileUrl = finalString;
       });
 
@@ -186,7 +218,8 @@ class _LocalFilesState extends State<LocalFiles> with WidgetsBindingObserver {
       final filename = openFileUrl.substring(openFileUrl.lastIndexOf("/") + 1);
       print(filename);
       if (filename.contains(".pdf")) {
-        openPdf();
+        openPdf(context, openFileUrl);
+        print('head is in pdf');
         // _isPDFFile = true;
       } else if (filename.contains(".mp4") ||
           filename.contains(".mov") ||
@@ -199,19 +232,25 @@ class _LocalFilesState extends State<LocalFiles> with WidgetsBindingObserver {
             builder: (context) => VideoBookPlayer(openFileUrl),
           ),
         );
+        print('head is in video player');
       } else if (filename.contains(".mp3") || filename.contains(".flac")) {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => AudioBookPlayer(
-              url: openFileUrl,
-            ),
+            builder: (context) =>
+                AudioBookPlayer(
+                  url: openFileUrl,
+                  bookImage: widget.bookImage,
+                  bookName: widget.bookName,
+                ),
           ),
         );
+        print('head is in audio player');
         /*   _isAudioFile = true;
       _isFileExist = true;*/
       } else if (filename.contains(".epub")) {
-        openEpub();
+        openEpub(context, openFileUrl);
+        print('head is in epub');
         // _isEpubFile = true;
       }
       /*else {
@@ -219,92 +258,11 @@ class _LocalFilesState extends State<LocalFiles> with WidgetsBindingObserver {
       // _isDefaultFile = true;
     }*/
 
-// for epub
-/*
-      EpubViewer.setConfig(
-          themeColor: Theme.of(context).primaryColor,
-          identifier: "iosBook",
-          scrollDirection: EpubScrollDirection.VERTICAL,
-          allowSharing: true,
-          enableTts: true,
-          nightMode: false);
-      EpubViewer.open(
-        openFileUrl,
-      );
-      print('****** $openFileUrl  *******  IN EPUBVIEWER');
-*/
-
-      // for pdf
-      /* Container(
-        height: MediaQuery.of(context).size.height * 0.85,
-        child: PDFView(
-          filePath: fileUrl,
-          pageSnap: false,
-          swipeHorizontal: true,
-          onPageChanged: (int page, int total) {
-            print('****** $fileUrl  *******  IN PDF HERE');
-               print('page change: $page/$total');
-            setInt(PAGE_NUMBER + widget.mBookId.toString(), page);
-            setState(() {
-              currentPage = page;
-            });
-          },
-             defaultPage: currentPage,
-
-        ),
-      ); */
-
-/*       if (_isPDFFile) {
-  */ /*      Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => ViewEPubFileNew(
-          'id','NAME','',openFileUrl,
-              null,
-              true,
-            _isFileExist
-              ),
-          ),
-        );*/ /*
-
-         openPdf();
-      }
-      // for videofile
-      else if
-      (_isVideoFile) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => VideoBookPlayer(
-                openFileUrl
-            ),
-          ),
-        );
-      }
-      // for audiofile
-      else if
-      (_isAudioFile) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => AudioBookPlayer(
-              url: openFileUrl,
-
-            ),
-          ),
-        );
-      }
-      // for epubfile
-      else if
-      (_isEpubFile) {
-         openEpub();
-      } else {
-        toast("File format not supported.");
-      }*/
     }
   }
 
-  void openPdf() {
-    PDFView(
+  void openPdf(BuildContext context, String fileUrl) {
+    /* PDFView(
       filePath: fileUrl,
       pageSnap: false,
       swipeHorizontal: true,
@@ -317,12 +275,15 @@ class _LocalFilesState extends State<LocalFiles> with WidgetsBindingObserver {
         });
       },
       defaultPage: currentPage,
-    );
+    );*/
+    PdftronFlutter.openDocument(fileUrl,);
   }
 
-  Future<void> openEpub() async {
+  Future<void> openEpub(BuildContext context, String fileUrl) async {
     EpubViewer.setConfig(
-        themeColor: Theme.of(context).primaryColor,
+        themeColor: Theme
+            .of(context)
+            .primaryColor,
         identifier: "iosBook",
         scrollDirection: EpubScrollDirection.VERTICAL,
         allowSharing: true,
@@ -343,7 +304,7 @@ class _LocalFilesState extends State<LocalFiles> with WidgetsBindingObserver {
       epubLocator = EpubLocator();
       await removeKey('locator');
     }
-    EpubViewer.open(Platform.isAndroid ? openFileUrl : openFileUrl,
+    EpubViewer.open(Platform.isAndroid ? fileUrl : fileUrl,
         lastLocation: epubLocator);
 
     EpubViewer.locatorStream.listen((locator) {

@@ -56,6 +56,7 @@ class _VideoBookPlayerState extends State<VideoBookPlayer> {
 
   checkFileIsExist() async {
     fileExist = await isFileExist(widget.downloads);
+    print(widget.downloads);
     setState(() {});
     if (fileExist) {
       printLogs("Play from Local File");

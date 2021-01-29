@@ -73,6 +73,9 @@
                 <data android:pathPattern=".*\\.epub" />
                 <data android:mimeType="application/epub" />
                 <data android:mimeType="application/epub+zip" />
+                <data android:mimeType="application/vnd.google.panorama360+jpg"/>
+                <data android:mimeType="image/*"/>
+                <data android:mimeType="video/*"/>
 
             </intent-filter>
             <!--            <intent-filter>

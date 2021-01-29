@@ -84,8 +84,7 @@ class DatabaseHelper {
       whereArgs: [userId.toString()],
       orderBy: COLUMN_NAME_BOOK_NAME + " ASC",
     );
-    List<DownloadedBook> bookList =
-        list.map((i) => DownloadedBook.fromJson(i)).toList();
+    List<DownloadedBook> bookList = list.map((i) => DownloadedBook.fromJson(i)).toList();
     List<OfflineBookList> newList;
 
     bookList.forEach((element) async {

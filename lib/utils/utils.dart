@@ -80,6 +80,7 @@ Future<String> get localPath async {
   printLogs(
       "localPath: " + directory.absolute.path + "/" + userId.toString() + "");
   return directory.absolute.path + "/" + userId.toString() + "";
+
 }
 
 Future addToSearchArray(searchText) async {
