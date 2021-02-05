@@ -6,7 +6,7 @@ part 'pdfBookMark.g.dart';
 
 class PdfBookMark {
   String id;
-  List<dynamic> marksList;
+  List<int> marksList;
 
   PdfBookMark({this.id, this.marksList});
 

@@ -108,7 +108,7 @@ class _AudioBookPlayerState extends State<AudioBookPlayer>
 
   // List<Duration> marksList;
 
- /// shared pref method
+  /// shared pref method
   AudioMark events = AudioMark();
 
   load() async {
@@ -120,11 +120,10 @@ class _AudioBookPlayerState extends State<AudioBookPlayer>
 
   save() async {
     events.mark = [];
-    events.mark.insert(0, Mark(audioId: url,  marksList: [_position.inMilliseconds] ));
+    events.mark.insert(0, Mark(audioId: url, marksList: [_position.inMilliseconds]));
     Map value = events.toJson();
     print('shared prefs saving data ${jsonEncode(value)}');
     await Pref().setValueByKey(Pref().eventsKey, jsonEncode(value));
-
   }
 
   @override
@@ -292,10 +291,6 @@ class _AudioBookPlayerState extends State<AudioBookPlayer>
                         print('Audio mark pressed text duration ${_position}');
 
                         save();
-                       /* setState(() {
-                          marksList.insert(0, _position);
-                        });*/
-                        // print(marksList);
                       },
                       iconSize: 30.0,
                       icon: Icon(Icons.flag_outlined),
@@ -396,17 +391,19 @@ class _AudioBookPlayerState extends State<AudioBookPlayer>
                       ),
                       Container(
                         height: MediaQuery.of(context).size.height * .60,
-                        child: (widget.url == events.mark[0].audioId && events.mark.length > 0)
+                        child: (widget.url == events.mark[0].audioId &&
+                                events.mark.length > 0)
                             ? ListView.builder(
                                 itemCount: events.mark.length,
                                 itemBuilder: (context, int index) {
-                                  Duration duration = new Duration(milliseconds: events.mark[index].marksList[index]);
-                                  print("the duration from load shared $duration");
-                                  String markToText = duration
-                                          ?.toString()
-                                          ?.split(".")
-                                          ?.first ??
-                                      '';
+                                  Duration duration = new Duration(
+                                      milliseconds:
+                                          events.mark[index].marksList[index]);
+                                  print(
+                                      "the duration from load shared $duration");
+                                  String markToText =
+                                      duration?.toString()?.split(".")?.first ??
+                                          '';
                                   return ListTile(
                                     dense: false,
                                     onTap: () {

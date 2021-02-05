@@ -94,9 +94,7 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
       currentPage = 0;
     }*/
 
-    if( widget.mBookId == pageMarksList[0].id){
-      _loadData();
-    }
+
   }
 
   void requestPermission() async {
@@ -202,7 +200,7 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
           ),
           onTap: () {
             pdfMarks(context);
-            _loadData();
+
           },
         ),
       ]),
@@ -360,7 +358,7 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
                       ),
                       Container(
                         height: MediaQuery.of(context).size.height * .60,
-                        child: (pageMarksList.length > 0)
+                        child: (widget.mBookId == pageMarksList[0].id &&pageMarksList.length > 0)
                             ? FutureBuilder<PDFViewController>(
                                 future: _controller.future,
                                 builder: (context,
@@ -553,8 +551,10 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
 
   _loadData() {
     List<String> dataLoad = sharedPreferences.getStringList('key');
+    print('in load before if $dataLoad');
     if (dataLoad != null) {
-      pageMarksList = dataLoad.map((e) => jsonDecode(e)).toList().toSet().toList();
+      print('in load  in if $dataLoad');
+     pageMarksList = dataLoad.map((e) => jsonDecode(e)).toList();
       setState(() {});
     }
     print('in load $dataLoad');
