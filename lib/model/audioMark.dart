@@ -1,56 +1,41 @@
-// import 'package:shared_preferences/shared_preferences.dart';
-
-/*class AudioMarkSF {
-  static final String _idPrefs = "id";
-  static final String _markPrefs = "mark";
-
-  // getting data
-  static Future<String> getId() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    return prefs.getString(_idPrefs) ?? 'id';
-  }
-
-  // Setting data
-  static Future<bool> setId(String value) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.setString(_idPrefs, value);
-  }
-
-  // getting data
-  static Future<String> getMark() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    return prefs.getString(_markPrefs) ?? 'mark';
-  }
-
-// Setting data
-  static Future<bool> setMark(String value) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.setString(_markPrefs, value);
-  }
-}*/
-
 class AudioMark {
-   final String bookId;
-   final dynamic mark;
+  List<Mark> mark;
 
-  AudioMark({this.bookId, this.mark});
+  AudioMark({this.mark});
 
-/*  AudioMark.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    mark = json['mark'];
+  AudioMark.fromJson(Map<String, dynamic> json) {
+    if (json['mark'] != null) {
+      mark = new List<Mark>();
+      json['mark'].forEach((v) {
+        mark.add(new Mark.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
-*//*    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['mark'] = this.mark;
-    *//*
-  return{
-    'id' : id,
-    'mark' : mark,
-  };
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    if (this.mark != null) {
+      data['mark'] = this.mark.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
 
-  }*/
+class Mark {
+  String audioId;
+  List<int> marksList;
+
+  Mark({this.audioId, this.marksList});
+
+  Mark.fromJson(Map<String, dynamic> json) {
+    audioId = json['audioId'];
+    marksList = json['marksList'].cast<int>();
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['audioId'] = this.audioId;
+    data['marksList'] = this.marksList;
+    return data;
+  }
 }

@@ -111,8 +111,23 @@ class _ProfileViewState extends State<ProfileView> {
               mOption("menu.png", "lbl_categories").onTap(() {
                 CategoriesList().launch(context);
               }),
-              mOption("bookmark.png", "lbl_my_bookmark").onTap(() {
-                MyBookMarkScreen().launch(context);
+              /*Row(
+                children: [
+                  Icon(
+                    Icons.favorite_border,
+                  ),
+
+                  16.width,
+                  Text(
+                    keyString(context, "My Favorite Books"),
+                    style: primaryTextStyle(
+                      size: 24,
+                    ),
+                  ).expand(),
+                ],
+              ).paddingOnly(top: 8, left: 20, right: 20, bottom: 8).onTap((){ MyFavBookScreen().launch(context);}).visible(isLoginIn),*/
+                  mOption("bookmark.png", "lbl_my_bookmark").onTap(() {
+                MyFavBookScreen().launch(context);
               }).visible(isLoginIn),
               mOption("info.png", "lbl_about").onTap(() {
                 AboutUs().launch(context);

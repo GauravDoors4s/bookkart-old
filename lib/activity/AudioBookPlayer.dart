@@ -1,15 +1,15 @@
 import 'dart:async';
-
+import 'dart:convert';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-// import 'package:flutterapp/model/audioMark.dart';
+import 'package:flutterapp/model/audioMark.dart';
 import 'package:flutterapp/utils/Colors.dart';
 import 'package:flutterapp/utils/Constant.dart';
 import 'package:flutterapp/utils/app_widget.dart';
-// import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutterapp/utils/pref.dart';
 import '../main.dart';
 
 enum PlayerState { stopped, playing, paused }
@@ -89,6 +89,7 @@ class _AudioBookPlayerState extends State<AudioBookPlayer>
     super.initState();
     _initAudioPlayer();
     WidgetsBinding.instance.addObserver(this);
+    load();
   }
 
   @override
@@ -105,24 +106,27 @@ class _AudioBookPlayerState extends State<AudioBookPlayer>
     Navigator.of(context).pop();
   }
 
-/*  final Map<String, dynamic> markData = {
-    "id": '',
-    "mark": '',
-  };*/
-/*  List<AudioMark> marksList = [
-    AudioMark(id: '01', mark:' 1.0'),
-    AudioMark(id: '01', mark: '3.2'),
-    AudioMark(id: '01', mark: '2.0'),
-    AudioMark(id: '01', mark: '5'),
-  ];*/
+  // List<Duration> marksList;
 
-  List<dynamic> marksList = [];
+ /// shared pref method
+  AudioMark events = AudioMark();
 
-/*   List<AudioMark> marksList = mapData.entries
-      .map<AudioMark>((entry) => AudioMark(entry.key, entry.value))
-      .toList();*/
+  load() async {
+    String json = await Pref().getValueByKey(Pref().eventsKey);
+    if (json != null) {
+      events = AudioMark.fromJson(jsonDecode(json));
+    }
+  }
 
-  // dynamic markList = markData.values.toList();
+  save() async {
+    events.mark = [];
+    events.mark.insert(0, Mark(audioId: url,  marksList: [_position.inMilliseconds] ));
+    Map value = events.toJson();
+    print('shared prefs saving data ${jsonEncode(value)}');
+    await Pref().setValueByKey(Pref().eventsKey, jsonEncode(value));
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -150,12 +154,12 @@ class _AudioBookPlayerState extends State<AudioBookPlayer>
               ],
             ),
             child: Icon(
-              Icons.list, color: Colors.black,
+              Icons.list,
+              color: Colors.black,
             ),
           ),
           onTap: () {
             audioMarks(context);
-
           },
         ),
       ]),
@@ -285,12 +289,13 @@ class _AudioBookPlayerState extends State<AudioBookPlayer>
                       // onPressed: _isPlaying ? null : () => _play(),
                       onPressed: () {
                         print('Audio mark pressed total duration $_duration');
-                        print('Audio mark pressed text duration $_position');
+                        print('Audio mark pressed text duration ${_position}');
 
-                        setState(() {
+                        save();
+                       /* setState(() {
                           marksList.insert(0, _position);
-                        });
-                        print(marksList);
+                        });*/
+                        // print(marksList);
                       },
                       iconSize: 30.0,
                       icon: Icon(Icons.flag_outlined),
@@ -391,11 +396,13 @@ class _AudioBookPlayerState extends State<AudioBookPlayer>
                       ),
                       Container(
                         height: MediaQuery.of(context).size.height * .60,
-                        child: (marksList.length > 0)
+                        child: (widget.url == events.mark[0].audioId && events.mark.length > 0)
                             ? ListView.builder(
-                                itemCount: marksList.length,
+                                itemCount: events.mark.length,
                                 itemBuilder: (context, int index) {
-                                  String markToText = marksList[index]
+                                  Duration duration = new Duration(milliseconds: events.mark[index].marksList[index]);
+                                  print("the duration from load shared $duration");
+                                  String markToText = duration
                                           ?.toString()
                                           ?.split(".")
                                           ?.first ??
@@ -404,10 +411,8 @@ class _AudioBookPlayerState extends State<AudioBookPlayer>
                                     dense: false,
                                     onTap: () {
                                       Navigator.pop(context);
-                                      _play(marksList[index]);
-                                      // _position = _duration;
-                                      print(
-                                          'play @ $index, ${marksList[index]}');
+                                      _play(duration);
+                                      print('play @ $index, ${duration}');
                                     },
                                     title: Text(markToText),
                                     trailing: GestureDetector(
@@ -415,7 +420,7 @@ class _AudioBookPlayerState extends State<AudioBookPlayer>
                                           print(
                                               'delete clicked in bottom sheet');
                                           state(() {
-                                            marksList.removeAt(index);
+                                            // .removeAt(index);
                                           });
                                         },
                                         child: Container(

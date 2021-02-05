@@ -114,6 +114,7 @@ class _AboutUsState extends State<AboutUs> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
+
                   children: <Widget>[
                     16.width,
                     InkWell(

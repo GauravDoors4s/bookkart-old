@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:isolate';
 import 'dart:ui';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
@@ -9,19 +11,16 @@ import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:flutterapp/app_localizations.dart';
 import 'package:flutterapp/model/DashboardResponse.dart';
 import 'package:flutterapp/model/downloaded_book.dart';
+import 'package:flutterapp/model/pdfBookMark.dart';
+import 'package:flutterapp/utils/Colors.dart';
 import 'package:flutterapp/utils/Constant.dart';
+import 'package:flutterapp/utils/pref.dart';
 import 'package:flutterapp/utils/app_widget.dart';
 import 'package:flutterapp/utils/database_helper.dart';
 import 'package:epub_viewer/epub_viewer.dart';
 import 'package:flutterapp/utils/utils.dart';
 import 'package:nb_utils/nb_utils.dart';
 import '../main.dart';
-import 'dart:async';
-import 'package:flutter/services.dart';
-import 'package:pdftron_flutter/pdftron_flutter.dart';
-
-// import 'package:open_file/open_file.dart';
-// import 'package:dio/dio.dart';
 
 // ignore: must_be_immutable
 class ViewEPubFileNew extends StatefulWidget {
@@ -31,16 +30,19 @@ class ViewEPubFileNew extends StatefulWidget {
   final TargetPlatform platform;
   bool isPDFFile = false;
   bool _isFileExist = false;
- String bookMark;
+  String pageMark;
 
   ViewEPubFileNew(this.mBookId, this.mBookName, this.mBookImage, this.downloads,
-      this.platform, this.isPDFFile, this._isFileExist, this.bookMark);
+      this.platform, this.isPDFFile, this._isFileExist);
 
   @override
   ViewEPubFileNewState createState() => ViewEPubFileNewState();
 }
 
 class ViewEPubFileNewState extends State<ViewEPubFileNew> {
+  GlobalKey<ScaffoldState> scaffoldState = GlobalKey();
+  final Completer<PDFViewController> _controller =
+      Completer<PDFViewController>();
   _TaskInfo _tasks;
   bool isDownloadFile = false;
   bool isDownloadFailFile = false;
@@ -52,122 +54,51 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
   DownloadedBook mSampleDownloadTask;
   DownloadedBook mBookDownloadTask;
   int currentPage = 0;
-  bool _showViewer = true;
-  String _version = 'Unknown';
-  String _document =
-      "https://rise.esmap.org/data/files/webform/pdf-harry-potter-and-the-order-of-the-phoenix-book-5-jk-rowling-pdf-download-free-book-beb8863.pdf";
+  int pages = 0;
+  bool isReady = false;
+  String errorMessage = '';
+  SharedPreferences sharedPreferences;
 
-  String filePath;
   @override
   void initState() {
     super.initState();
-     initialDownload();
-    initPlatformState();
-    // showViewer();
-  /*  getBookmark();*/
+    getSaveSharedData();
+    initialDownload();
   }
-  Future<void> initPlatformState() async {
-    String version;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    try {
-      PdftronFlutter.initialize("your_pdftron_license_key");
-      version = await PdftronFlutter.version;
-    } on PlatformException {
-      version = 'Failed to get platform version.';
-    }
 
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
-
-    setState(() {
-      _version = version;
-    });
+  Future getSaveSharedData() async {
+    sharedPreferences = await SharedPreferences.getInstance();
+    _loadData();
   }
-/*
-  void showViewer() async {
-    // opening without a config file will have all functionality enabled.
-    // await PdftronFlutter.openDocument(_document);
 
-    // shows how to disale functionality
-//      var disabledElements = [Buttons.shareButton, Buttons.searchButton];
-//      var disabledTools = [Tools.annotationCreateLine, Tools.annotationCreateRectangle];
-    var config = Config();
-//      config.disabledElements = disabledElements;
-//      config.disabledTools = disabledTools;
-//      config.multiTabEnabled = true;
-//      config.customHeaders = {'headerName': 'headerValue'};
-
-    var documentLoadedCancel = startDocumentLoadedListener((filePath) {
-      print("document loaded: $filePath");
-    });
-
-    await PdftronFlutter.openDocument(_document, config: config);
-
-    try {
-      PdftronFlutter.importAnnotationCommand(
-          "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-              "    <xfdf xmlns=\"http://ns.adobe.com/xfdf/\" xml:space=\"preserve\">\n" +
-              "      <add>\n" +
-              "        <square style=\"solid\" width=\"5\" color=\"#E44234\" opacity=\"1\" creationdate=\"D:20200619203211Z\" flags=\"print\" date=\"D:20200619203211Z\" name=\"c684da06-12d2-4ccd-9361-0a1bf2e089e3\" page=\"1\" rect=\"113.312,277.056,235.43,350.173\" title=\"\" />\n" +
-              "      </add>\n" +
-              "      <modify />\n" +
-              "      <delete />\n" +
-              "      <pdf-info import-version=\"3\" version=\"2\" xmlns=\"http://www.pdftron.com/pdfinfo\" />\n" +
-              "    </xfdf>");
-    } on PlatformException catch (e) {
-      print("Failed to importAnnotationCommand '${e.message}'.");
-    }
-
-    try {
-      PdftronFlutter.importBookmarkJson('{"0":"Page 1"}');
-    } on PlatformException catch (e) {
-      print("Failed to importBookmarkJson '${e.message}'.");
-    }
-
-    var annotCancel = startExportAnnotationCommandListener((xfdfCommand) {
-      // local annotation changed
-      // upload XFDF command to server here
-      print("flutter xfdfCommand: $xfdfCommand");
-    });
-
-    var bookmarkCancel = startExportBookmarkListener((bookmarkJson) {
-      print("flutter bookmark: $bookmarkJson");
-    });
-
-    var path = await PdftronFlutter.saveDocument();
-    print("flutter save: $path");
-
-    // to cancel event:
-    // annotCancel();
-    // bookmarkCancel();
-  }*/
   // ignore: missing_return
-
   Future initialDownload() async {
     if (widget._isFileExist) {
-      filePath =
+      String filePath =
           await getBookFilePath(widget.mBookId, widget.downloads.file);
       setState(() {
         isDownloadFile = true;
       });
       _openDownloadedFile(filePath);
-
     } else {
       userId = await getInt(USER_ID);
       _bindBackgroundIsolate();
       FlutterDownloader.registerCallback(downloadCallback);
       requestPermission();
     }
-    var mCurrentPAgeData = await getInt(PAGE_NUMBER + widget.mBookId);
-    print("Page Saved : " + mCurrentPAgeData.toString());
+/*    var mCurrentPAgeData = await getInt(PAGE_NUMBER + widget.mBookId);
+    print("Page" + mCurrentPAgeData.toString());
     if (mCurrentPAgeData != null && mCurrentPAgeData.toString().isNotEmpty) {
       currentPage = mCurrentPAgeData;
     } else {
       currentPage = 0;
+    }*/
+
+    if( widget.mBookId == pageMarksList[0].id){
+      _loadData();
     }
   }
+
   void requestPermission() async {
     if (await checkPermission(widget)) {
       _prepare();
@@ -185,7 +116,6 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
     _unbindBackgroundIsolate();
     super.dispose();
   }
-
 
   void _bindBackgroundIsolate() async {
     bool isSuccess = IsolateNameServer.registerPortWithName(
@@ -229,22 +159,53 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
     IsolateNameServer.removePortNameMapping('downloader_send_port');
   }
 
-  static void downloadCallback(String id, DownloadTaskStatus status, int progress) {
+  static void downloadCallback(
+      String id, DownloadTaskStatus status, int progress) {
     final SendPort send =
         IsolateNameServer.lookupPortByName('downloader_send_port');
     send.send([id, status, progress]);
   }
 
-  // for bookmark button
-  // bool pressed = false;
-
+  List<PdfBookMark> pageMarksList = List<PdfBookMark>();
+  List<int> localMarksList = [];
 
   @override
   Widget build(BuildContext context) {
-
     return new Scaffold(
       backgroundColor: appStore.scaffoldBackground,
-      appBar: appBar(context, title: widget.downloads.name),
+      appBar: appBar(context, title: widget.downloads.name, actions: <Widget>[
+        GestureDetector(
+          child: Container(
+            margin: EdgeInsets.all(10),
+            padding: EdgeInsets.fromLTRB(10, 5, 10, 10),
+            decoration: BoxDecoration(
+              color: appStore.editTextBackColor,
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(5),
+                  topRight: Radius.circular(5),
+                  bottomLeft: Radius.circular(5),
+                  bottomRight: Radius.circular(5)),
+              boxShadow: [
+                BoxShadow(
+                  color: appStore.isDarkModeOn
+                      ? appStore.scaffoldBackground
+                      : shadow_color,
+                  blurRadius: 5,
+                  offset: Offset(0, 3), // changes position of shadow
+                ),
+              ],
+            ),
+            child: Icon(
+              Icons.list,
+              color: Colors.black,
+            ),
+          ),
+          onTap: () {
+            pdfMarks(context);
+            _loadData();
+          },
+        ),
+      ]),
       body: Builder(
         builder: (context) => !isDownloadFile
             ? isDownloadFailFile
@@ -299,120 +260,174 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
                           )
                         : SizedBox(),
                   )
-
-            // for pdf
             : !widget.isPDFFile
                 ? SizedBox()
-                : /*Container(
+                : Container(
                     height: MediaQuery.of(context).size.height * 0.85,
                     child: PDFView(
                       filePath: fullFilePath,
+                      enableSwipe: true,
                       pageSnap: false,
                       swipeHorizontal: false,
-                      onPageChanged: (int page, int total) {
+                      onRender: (_page) {
+                        setState(() {
+                          pages = _page;
+                          isReady = true;
+                        });
+                      },
+                      onViewCreated: (PDFViewController pdfViewController) {
+                        _controller.complete(pdfViewController);
+                      },
+                      onPageChanged: (page, total) {
                         print('page change: $page/$total');
-                        setInt(PAGE_NUMBER + widget.mBookId.toString(), page);
+                        /*    setInt(PAGE_NUMBER + widget.mBookId.toString(), page);*/
                         setState(() {
                           currentPage = page;
                         });
                       },
                       defaultPage: currentPage,
                     ),
-                  ),*/
-
-          PdftronFlutter.openDocument(fullFilePath),
-       /* Container(
-          width: double.infinity,
-          height: double.infinity,
-          child:
-          // Uncomment this to use Widget version of the viewer
-          _showViewer
-              ? DocumentView(
-            onCreated: _onDocumentViewCreated,
-          ):
-          Container(
-            child: Text('invalid file / not processing it'),
-          ),
-        ),*/
-
-
+                  ),
       ),
+      floatingActionButton: GestureDetector(
+          onTap: () async {
+            if (pageMarksList.length < 1) {
+/*              marksList.insert(0, currentPage);
+              pageMarksList.insert(
+                  0, PdfBookMark(id: widget.mBookId, marksList: marksList));*/
 
-      //bookmark page
-   /*   floatingActionButton: FloatingActionButton(
-        backgroundColor: appStore.scaffoldBackground,
-        *//*child: ,*//*
-        child: pressed ? Text(widget.bookMark,style: TextStyle(color: Colors.black),):Icon(Icons.bookmark_border_sharp),
-        onPressed: () {
-
-          setState(() {
-            pressed = true;
-            widget.bookMark = currentPage.toString();
-            saveBookmark();
-          });
-          print('${widget.bookMark} page no bookmark Saved');
-          print('$pressed bool value bookmark Saved');
-        },
-      ),*/
+              _saveData();
+              flushBar("Bookmark Added");
+              print('bookmark in null condition');
+            } else if (!pageMarksList.contains(currentPage)) {
+              /*          marksList.insert(0, currentPage);
+              pageMarksList.insert(
+                  0, PdfBookMark(id: widget.mBookId, marksList: marksList));*/
+              _saveData();
+              flushBar("Bookmark Added");
+              print('bookmark in 2 condition');
+            } else {
+              flushBar("Bookmark Already Exists");
+              print('bookmark in 3 condition');
+            }
+            print(
+                'whole saved list ${pageMarksList[0].id},${pageMarksList[0].marksList}');
+          },
+          child: Container(
+            decoration: BoxDecoration(
+                color: appStore.appBarColor,
+                borderRadius: BorderRadius.all(Radius.circular(20))),
+            height: 50,
+            width: 50,
+            child: Icon(Icons.book),
+          )),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
-/*   saveBookmark() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('pageBookmark',widget.bookMark );
-    prefs.setString('bookId', widget.mBookId );
-    prefs.setBool('boolVal',pressed );
-    print('page marked method run and saved');
-  }
 
-  getBookmark() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    widget.bookMark = prefs.getString('pageBookmark');
-    widget.mBookId = prefs.getString('bookId');
-     pressed = prefs.getBool('boolVal');
-    print('${widget.bookMark} prefs value----> bookmark Saved');
-    print('${widget.mBookId}  prefs BOOk Id ----> bookmark Saved');
-    print('$pressed prefs bool value----> bookmark Saved');
-  }*/
-
-
-  // void _onDocumentViewCreated(DocumentViewController controller) async {
-  //   Config config = new Config();
-  //
-  //   var leadingNavCancel = startLeadingNavButtonPressedListener(() {
-  //     // Uncomment this to quit the viewer when leading navigation button is pressed
-  //     this.setState(() {
-  //       _showViewer = !_showViewer;
-  //     });
-  //
-  //     // Show a dialog when leading navigation button is pressed
-  //     _showMyDialog();
-  //   });
-  //
-  //   controller.openDocument(fullFilePath, config: config);
-  // }
-  Future<void> _showMyDialog() async {
-    print('hello');
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('AlertDialog'),
-          content: SingleChildScrollView(
-            child: Text('Leading navigation button has been pressed.'),
+  void pdfMarks(BuildContext context) {
+    showModalBottomSheet(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(30.0),
           ),
-          actions: <Widget>[
-            TextButton(
-              child: Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
+        ),
+        backgroundColor: Colors.white,
+        context: context,
+        isScrollControlled: true,
+        builder: (context) =>
+            StatefulBuilder(builder: (BuildContext context, StateSetter state) {
+              return Container(
+                  height: MediaQuery.of(context).size.height * .70,
+                  //height of bottomsheet
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 05,
+                  ),
+                  // color: Colors.green,
+                  child: Column(
+                    children: [
+                      AppBar(
+                        automaticallyImplyLeading: false,
+                        title: Center(
+                            child: Text(
+                          'Your BookMarks',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.black),
+                        )),
+                        backgroundColor: Colors.transparent,
+                        elevation: 0,
+                        shadowColor: Colors.black,
+                      ),
+                      Container(
+                        height: MediaQuery.of(context).size.height * .60,
+                        child: (pageMarksList.length > 0)
+                            ? FutureBuilder<PDFViewController>(
+                                future: _controller.future,
+                                builder: (context,
+                                    AsyncSnapshot<PDFViewController> snapshot) {
+                                  if (snapshot.hasData) {
+                                    return ListView.builder(
+                                      itemCount: pageMarksList.length,
+                                      itemBuilder: (context, int index) {
+                                        return ListTile(
+                                          dense: false,
+                                          onTap: () async {
+                                            await snapshot.data.setPage(
+                                                pageMarksList[index]
+                                                    .marksList[index]);
+                                            Navigator.pop(context);
+                                            print(snapshot);
+                                            print(
+                                                'PageMarked @ $index, ${localMarksList[index]}');
+                                          },
+                                          title: Text(
+                                              'Page No ${pageMarksList[index].marksList[index].toString()}'),
+                                          trailing: GestureDetector(
+                                              onTap: () {
+                                                print(
+                                                    'delete clicked in bottom sheet');
+                                                state(() {
+                                                  Pref().deleteValueByKey(
+                                                      "eventKey");
+                                                  /*    events.bookMark[index].marksList
+                                                      .removeAt(index);*/
+                                                });
+                                                flushBar("Bookmark Deleted");
+                                              },
+                                              child: Container(
+                                                  height: 50,
+                                                  width: 50,
+                                                  // color: Colors.black,
+                                                  child: Icon(
+                                                    Icons.delete,
+                                                    color: Colors.red,
+                                                  ))),
+                                        );
+                                      },
+                                    );
+                                  }
+                                  return Container();
+                                },
+                              )
+                            : Container(
+                                // color: Colors.red,
+                                child: Center(
+                                  child: Text(
+                                    "No BookMarks yet!\nHappy Reading",
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        wordSpacing: 05,
+                                        height: 02),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ),
+                      )
+                    ],
+                  ));
+            }));
   }
+
   void _resumeDownload(_TaskInfo task) async {
     String newTaskId = await FlutterDownloader.resume(taskId: task.taskId);
     task.taskId = newTaskId;
@@ -427,7 +442,6 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
   Future<bool> _openDownloadedFile(String filePath) async {
     setState(() {
       fullFilePath = filePath;
-      print("$filePath  THE SELECTED FILE  PATH******************");
     });
 
     if (!widget.isPDFFile) {
@@ -447,37 +461,23 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
           Map<String, dynamic> r = jsonDecode(locatorPref);
 
           epubLocator = EpubLocator.fromJson(r);
-          print("***Location prefs Are $r ******");
         }
       } on Exception catch (e) {
         epubLocator = EpubLocator();
         await removeKey('locator');
       }
+
       EpubViewer.open(Platform.isAndroid ? filePath : filePath,
           lastLocation: epubLocator);
 
       EpubViewer.locatorStream.listen((locator) {
+        var epubMark = locator;
         setString('locator', locator);
+        print(epubMark);
       });
       Navigator.of(context).pop();
     }
   }
-
-// open in 3rd app by me
-
-/*  Future<void> openFile(String openResult) async {
-    // Dio dio = Dio();
-    final filePath1 = '/sdcard/';
-    // final filePath = '/Users/chendong/Downloads/S91010-16435053-221705-o_1dmqeua2a2v2o0u126l1baqqc21e-uid-1817947@1080x2160.jpg';
-    // await dio.download("https://imgsa.baidu.com/exp/w=500/sign=9d6f3ebe35d3d539c13d0fc30a86e927/7aec54e736d12f2eedbdb0204cc2d56285356831.jpg", filePath);
-
-    final result = await OpenFile.open(filePath1);
-
-    setState(() {
-      openResult = "type=${result.type}  message=${result.message}";
-    });
-
-  }*/
 
   Future<String> getTaskId(id) async {
     int userId = await getInt(USER_ID, defaultValue: 0);
@@ -512,7 +512,6 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
           taskId: _tasks.taskId, shouldDeleteContent: false);
       insertIntoDb(filePath);
       _openDownloadedFile(filePath);
-      print('delete one $filePath');
       setState(() {
         isDownloadFile = true;
       });
@@ -530,9 +529,6 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
     }
   }
 
- /*
-    ------------------
-*/
   void insertIntoDb(filePath) async {
     /**
      * Store data to db for offline usage
@@ -546,6 +542,31 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
     _download.userId = userId.toString();
     _download.fileName = widget.downloads.name;
     await dbHelper.insert(_download);
+  }
+
+  void flushBar(String content) {
+    Flushbar(
+      message: content,
+      duration: Duration(seconds: 2),
+    )..show(context);
+  }
+
+  _loadData() {
+    List<String> dataLoad = sharedPreferences.getStringList('key');
+    if (dataLoad != null) {
+      pageMarksList = dataLoad.map((e) => jsonDecode(e)).toList().toSet().toList();
+      setState(() {});
+    }
+    print('in load $dataLoad');
+    print('in load pageMarklist $pageMarksList');
+  }
+  List<String> dataSave = [];
+  _saveData() async {
+    localMarksList.insert(0, currentPage);
+    pageMarksList.insert(0, PdfBookMark(id: widget.mBookId, marksList: localMarksList));
+    dataSave = pageMarksList.map((e) => jsonEncode(e)).toSet().toList();
+    await sharedPreferences.setStringList('key', dataSave);
+    print('in save $dataSave');
   }
 }
 
