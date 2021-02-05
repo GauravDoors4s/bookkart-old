@@ -255,7 +255,7 @@ mixin _$AppStore on AppStoreBase, Store {
   final _$checkRTLAsyncAction = AsyncAction('AppStoreBase.checkRTL');
 
   @override
-  Future checkRTL({String value}) {
+  Future<void> checkRTL({String value}) {
     return _$checkRTLAsyncAction.run(() => super.checkRTL(value: value));
   }
 

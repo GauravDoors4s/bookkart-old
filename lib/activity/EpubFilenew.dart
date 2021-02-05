@@ -1,8 +1,9 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:isolate';
 import 'dart:ui';
-
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
@@ -10,7 +11,10 @@ import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:flutterapp/app_localizations.dart';
 import 'package:flutterapp/model/DashboardResponse.dart';
 import 'package:flutterapp/model/downloaded_book.dart';
+import 'package:flutterapp/model/pdfBookMark.dart';
+import 'package:flutterapp/utils/Colors.dart';
 import 'package:flutterapp/utils/Constant.dart';
+import 'package:flutterapp/utils/pref.dart';
 import 'package:flutterapp/utils/app_widget.dart';
 import 'package:flutterapp/utils/database_helper.dart';
 import 'package:epub_viewer/epub_viewer.dart';
@@ -26,6 +30,7 @@ class ViewEPubFileNew extends StatefulWidget {
   final TargetPlatform platform;
   bool isPDFFile = false;
   bool _isFileExist = false;
+  String pageMark;
 
   ViewEPubFileNew(this.mBookId, this.mBookName, this.mBookImage, this.downloads,
       this.platform, this.isPDFFile, this._isFileExist);
@@ -35,6 +40,9 @@ class ViewEPubFileNew extends StatefulWidget {
 }
 
 class ViewEPubFileNewState extends State<ViewEPubFileNew> {
+  GlobalKey<ScaffoldState> scaffoldState = GlobalKey();
+  final Completer<PDFViewController> _controller =
+      Completer<PDFViewController>();
   _TaskInfo _tasks;
   bool isDownloadFile = false;
   bool isDownloadFailFile = false;
@@ -46,11 +54,21 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
   DownloadedBook mSampleDownloadTask;
   DownloadedBook mBookDownloadTask;
   int currentPage = 0;
+  int pages = 0;
+  bool isReady = false;
+  String errorMessage = '';
+  SharedPreferences sharedPreferences;
 
   @override
   void initState() {
     super.initState();
+    getSaveSharedData();
     initialDownload();
+  }
+
+  Future getSaveSharedData() async {
+    sharedPreferences = await SharedPreferences.getInstance();
+    _loadData();
   }
 
   // ignore: missing_return
@@ -68,13 +86,15 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
       FlutterDownloader.registerCallback(downloadCallback);
       requestPermission();
     }
-    var mCurrentPAgeData = await getInt(PAGE_NUMBER + widget.mBookId);
+/*    var mCurrentPAgeData = await getInt(PAGE_NUMBER + widget.mBookId);
     print("Page" + mCurrentPAgeData.toString());
     if (mCurrentPAgeData != null && mCurrentPAgeData.toString().isNotEmpty) {
       currentPage = mCurrentPAgeData;
     } else {
       currentPage = 0;
-    }
+    }*/
+
+
   }
 
   void requestPermission() async {
@@ -144,11 +164,46 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
     send.send([id, status, progress]);
   }
 
+  List<PdfBookMark> pageMarksList = List<PdfBookMark>();
+  List<int> localMarksList = [];
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
       backgroundColor: appStore.scaffoldBackground,
-      appBar: appBar(context, title: widget.downloads.name),
+      appBar: appBar(context, title: widget.downloads.name, actions: <Widget>[
+        GestureDetector(
+          child: Container(
+            margin: EdgeInsets.all(10),
+            padding: EdgeInsets.fromLTRB(10, 5, 10, 10),
+            decoration: BoxDecoration(
+              color: appStore.editTextBackColor,
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(5),
+                  topRight: Radius.circular(5),
+                  bottomLeft: Radius.circular(5),
+                  bottomRight: Radius.circular(5)),
+              boxShadow: [
+                BoxShadow(
+                  color: appStore.isDarkModeOn
+                      ? appStore.scaffoldBackground
+                      : shadow_color,
+                  blurRadius: 5,
+                  offset: Offset(0, 3), // changes position of shadow
+                ),
+              ],
+            ),
+            child: Icon(
+              Icons.list,
+              color: Colors.black,
+            ),
+          ),
+          onTap: () {
+            pdfMarks(context);
+
+          },
+        ),
+      ]),
       body: Builder(
         builder: (context) => !isDownloadFile
             ? isDownloadFailFile
@@ -209,21 +264,166 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
                     height: MediaQuery.of(context).size.height * 0.85,
                     child: PDFView(
                       filePath: fullFilePath,
+                      enableSwipe: true,
                       pageSnap: false,
                       swipeHorizontal: false,
-                      onPageChanged: (int page, int total) {
+                      onRender: (_page) {
+                        setState(() {
+                          pages = _page;
+                          isReady = true;
+                        });
+                      },
+                      onViewCreated: (PDFViewController pdfViewController) {
+                        _controller.complete(pdfViewController);
+                      },
+                      onPageChanged: (page, total) {
                         print('page change: $page/$total');
-                        setInt(PAGE_NUMBER + widget.mBookId.toString(), page);
+                        /*    setInt(PAGE_NUMBER + widget.mBookId.toString(), page);*/
                         setState(() {
                           currentPage = page;
                         });
                       },
                       defaultPage: currentPage,
-
                     ),
                   ),
       ),
+      floatingActionButton: GestureDetector(
+          onTap: () async {
+            if (pageMarksList.length < 1) {
+/*              marksList.insert(0, currentPage);
+              pageMarksList.insert(
+                  0, PdfBookMark(id: widget.mBookId, marksList: marksList));*/
+
+              _saveData();
+              flushBar("Bookmark Added");
+              print('bookmark in null condition');
+            } else if (!pageMarksList.contains(currentPage)) {
+              /*          marksList.insert(0, currentPage);
+              pageMarksList.insert(
+                  0, PdfBookMark(id: widget.mBookId, marksList: marksList));*/
+              _saveData();
+              flushBar("Bookmark Added");
+              print('bookmark in 2 condition');
+            } else {
+              flushBar("Bookmark Already Exists");
+              print('bookmark in 3 condition');
+            }
+            print(
+                'whole saved list ${pageMarksList[0].id},${pageMarksList[0].marksList}');
+          },
+          child: Container(
+            decoration: BoxDecoration(
+                color: appStore.appBarColor,
+                borderRadius: BorderRadius.all(Radius.circular(20))),
+            height: 50,
+            width: 50,
+            child: Icon(Icons.book),
+          )),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
+  }
+
+  void pdfMarks(BuildContext context) {
+    showModalBottomSheet(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(30.0),
+          ),
+        ),
+        backgroundColor: Colors.white,
+        context: context,
+        isScrollControlled: true,
+        builder: (context) =>
+            StatefulBuilder(builder: (BuildContext context, StateSetter state) {
+              return Container(
+                  height: MediaQuery.of(context).size.height * .70,
+                  //height of bottomsheet
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 05,
+                  ),
+                  // color: Colors.green,
+                  child: Column(
+                    children: [
+                      AppBar(
+                        automaticallyImplyLeading: false,
+                        title: Center(
+                            child: Text(
+                          'Your BookMarks',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.black),
+                        )),
+                        backgroundColor: Colors.transparent,
+                        elevation: 0,
+                        shadowColor: Colors.black,
+                      ),
+                      Container(
+                        height: MediaQuery.of(context).size.height * .60,
+                        child: (widget.mBookId == pageMarksList[0].id &&pageMarksList.length > 0)
+                            ? FutureBuilder<PDFViewController>(
+                                future: _controller.future,
+                                builder: (context,
+                                    AsyncSnapshot<PDFViewController> snapshot) {
+                                  if (snapshot.hasData) {
+                                    return ListView.builder(
+                                      itemCount: pageMarksList.length,
+                                      itemBuilder: (context, int index) {
+                                        return ListTile(
+                                          dense: false,
+                                          onTap: () async {
+                                            await snapshot.data.setPage(
+                                                pageMarksList[index]
+                                                    .marksList[index]);
+                                            Navigator.pop(context);
+                                            print(snapshot);
+                                            print(
+                                                'PageMarked @ $index, ${localMarksList[index]}');
+                                          },
+                                          title: Text(
+                                              'Page No ${pageMarksList[index].marksList[index].toString()}'),
+                                          trailing: GestureDetector(
+                                              onTap: () {
+                                                print(
+                                                    'delete clicked in bottom sheet');
+                                                state(() {
+                                                  Pref().deleteValueByKey(
+                                                      "eventKey");
+                                                  /*    events.bookMark[index].marksList
+                                                      .removeAt(index);*/
+                                                });
+                                                flushBar("Bookmark Deleted");
+                                              },
+                                              child: Container(
+                                                  height: 50,
+                                                  width: 50,
+                                                  // color: Colors.black,
+                                                  child: Icon(
+                                                    Icons.delete,
+                                                    color: Colors.red,
+                                                  ))),
+                                        );
+                                      },
+                                    );
+                                  }
+                                  return Container();
+                                },
+                              )
+                            : Container(
+                                // color: Colors.red,
+                                child: Center(
+                                  child: Text(
+                                    "No BookMarks yet!\nHappy Reading",
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        wordSpacing: 05,
+                                        height: 02),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ),
+                      )
+                    ],
+                  ));
+            }));
   }
 
   void _resumeDownload(_TaskInfo task) async {
@@ -264,11 +464,14 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
         epubLocator = EpubLocator();
         await removeKey('locator');
       }
+
       EpubViewer.open(Platform.isAndroid ? filePath : filePath,
           lastLocation: epubLocator);
 
       EpubViewer.locatorStream.listen((locator) {
+        var epubMark = locator;
         setString('locator', locator);
+        print(epubMark);
       });
       Navigator.of(context).pop();
     }
@@ -337,6 +540,33 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
     _download.userId = userId.toString();
     _download.fileName = widget.downloads.name;
     await dbHelper.insert(_download);
+  }
+
+  void flushBar(String content) {
+    Flushbar(
+      message: content,
+      duration: Duration(seconds: 2),
+    )..show(context);
+  }
+
+  _loadData() {
+    List<String> dataLoad = sharedPreferences.getStringList('key');
+    print('in load before if $dataLoad');
+    if (dataLoad != null) {
+      print('in load  in if $dataLoad');
+     pageMarksList = dataLoad.map((e) => jsonDecode(e)).toList();
+      setState(() {});
+    }
+    print('in load $dataLoad');
+    print('in load pageMarklist $pageMarksList');
+  }
+  List<String> dataSave = [];
+  _saveData() async {
+    localMarksList.insert(0, currentPage);
+    pageMarksList.insert(0, PdfBookMark(id: widget.mBookId, marksList: localMarksList));
+    dataSave = pageMarksList.map((e) => jsonEncode(e)).toSet().toList();
+    await sharedPreferences.setStringList('key', dataSave);
+    print('in save $dataSave');
   }
 }
 

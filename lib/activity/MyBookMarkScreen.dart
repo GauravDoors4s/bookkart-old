@@ -16,14 +16,14 @@ import '../main.dart';
 import 'ErrorView.dart';
 import 'NoInternetConnection.dart';
 
-class MyBookMarkScreen extends StatefulWidget {
+class MyFavBookScreen extends StatefulWidget {
   static var tag = "/MyBookMarkScreen";
 
   @override
-  _MyBookMarkScreenState createState() => _MyBookMarkScreenState();
+  _MyFavBookScreenState createState() => _MyFavBookScreenState();
 }
 
-class _MyBookMarkScreenState extends State<MyBookMarkScreen> {
+class _MyFavBookScreenState extends State<MyFavBookScreen> {
   bool mIsLoading = false;
   var mBookList = List<BookmarkResponse>();
   String firstName = "";

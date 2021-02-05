@@ -4,12 +4,12 @@ import 'package:flutter/rendering.dart';
 import 'package:flutterapp/app_localizations.dart';
 import 'package:flutterapp/utils/Colors.dart';
 import 'package:flutterapp/utils/Constant.dart';
-import 'package:flutterapp/utils/admob_utils.dart';
+// import 'package:flutterapp/utils/admob_utils.dart';
 import 'package:flutterapp/utils/app_widget.dart';
 import 'package:nb_utils/nb_utils.dart';
 import '../main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:admob_flutter/admob_flutter.dart';
+
 
 class AboutUs extends StatefulWidget {
   static var tag = "/AboutUs";
@@ -114,6 +114,7 @@ class _AboutUsState extends State<AboutUs> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
+
                   children: <Widget>[
                     16.width,
                     InkWell(
@@ -160,10 +161,10 @@ class _AboutUsState extends State<AboutUs> {
                     16.width
                   ],
                 ),
-                AdmobBanner(
+         /*       AdmobBanner(
                   adUnitId: getBannerAdUnitId(),
                   adSize: AdmobBannerSize.BANNER,
-                ).visible(isAdsLoading==true),
+                ).visible(isAdsLoading==true),*/
               ],
             ),
           )),

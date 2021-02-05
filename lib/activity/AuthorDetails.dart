@@ -6,7 +6,7 @@ import 'package:flutterapp/model/AuthorListResponse.dart';
 import 'package:flutterapp/model/DashboardResponse.dart';
 import 'package:flutterapp/network/rest_api_call.dart';
 import 'package:flutterapp/utils/Constant.dart';
-import 'package:flutterapp/utils/admob_utils.dart';
+// import 'package:flutterapp/utils/admob_utils.dart';
 import 'package:flutterapp/utils/app_widget.dart';
 import 'package:flutterapp/utils/utils.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -15,7 +15,7 @@ import '../main.dart';
 import 'BookDetails.dart';
 import 'ErrorView.dart';
 import 'NoInternetConnection.dart';
-import 'package:admob_flutter/admob_flutter.dart';
+// import 'package:admob_flutter/admob_flutter.dart';
 
 // ignore: must_be_immutable
 class AuthorDetails extends StatefulWidget {
@@ -173,10 +173,10 @@ class _AuthorDetailsState extends State<AuthorDetails> {
           ],
         ),
       ),
-      bottomNavigationBar: AdmobBanner(
+/*      bottomNavigationBar: AdmobBanner(
         adUnitId: getBannerAdUnitId(),
     adSize: AdmobBannerSize.BANNER,
-    ).visible(isAdsLoading==true),
+    ).visible(isAdsLoading==true),*/
     );
   }
 }

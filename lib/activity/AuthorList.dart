@@ -8,12 +8,12 @@ import 'package:flutterapp/app_localizations.dart';
 import 'package:flutterapp/model/AuthorListResponse.dart';
 import 'package:flutterapp/network/rest_api_call.dart';
 import 'package:flutterapp/utils/Colors.dart';
-import 'package:flutterapp/utils/Constant.dart';
-import 'package:flutterapp/utils/admob_utils.dart';
+// import 'package:flutterapp/utils/Constant.dart';
+// import 'package:flutterapp/utils/admob_utils.dart';
 import 'package:flutterapp/utils/app_widget.dart';
 import 'package:flutterapp/utils/utils.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:admob_flutter/admob_flutter.dart';
+// import 'package:admob_flutter/admob_flutter.dart';
 import '../main.dart';
 import 'AuthorDetails.dart';
 import 'ErrorView.dart';
@@ -178,10 +178,10 @@ class _AuthorListState extends State<AuthorList> {
           appLoaderWidget.center().visible(mIsLoading),
         ]),
       ),
-      bottomNavigationBar: AdmobBanner(
+/*      bottomNavigationBar: AdmobBanner(
         adUnitId: getBannerAdUnitId(),
         adSize: AdmobBannerSize.BANNER,
-      ).visible(isAdsLoading==true),
+      ).visible(isAdsLoading==true),*/
     );
   }
 }

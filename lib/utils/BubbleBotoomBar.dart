@@ -1,5 +1,4 @@
 import 'dart:math' as math;
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -56,8 +55,15 @@ class BubbleBottomBar extends StatefulWidget {
 }
 
 class _BottomNavigationTile extends StatelessWidget {
-  const _BottomNavigationTile(this.item, this.opacity, this.animation, this.iconSize,
-      {this.onTap, this.colorTween, this.flex, this.selected = false, this.indexLabel, this.ink = false, this.inkColor})
+  const _BottomNavigationTile(
+      this.item, this.opacity, this.animation, this.iconSize,
+      {this.onTap,
+      this.colorTween,
+      this.flex,
+      this.selected = false,
+      this.indexLabel,
+      this.ink = false,
+      this.inkColor})
       : assert(selected != null);
 
   final BubbleBottomBarItem item;
@@ -107,14 +113,18 @@ class _BottomNavigationTile extends StatelessWidget {
               child: Container(
                 height: 40,
                 decoration: BoxDecoration(
-                    color: selected ? item.backgroundColor.withOpacity(opacity) : Colors.transparent,
+                    color: selected
+                        ? item.backgroundColor.withOpacity(opacity)
+                        : Colors.transparent,
                     borderRadius: BorderRadius.horizontal(
                       right: Radius.circular(50),
                       left: Radius.circular(50),
                     )),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: selected ? MainAxisAlignment.spaceEvenly : MainAxisAlignment.center,
+                  mainAxisAlignment: selected
+                      ? MainAxisAlignment.spaceEvenly
+                      : MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.max,
                   children: <Widget>[
                     _TileIcon(
@@ -132,7 +142,9 @@ class _BottomNavigationTile extends StatelessWidget {
                       sizeCurve: Curves.fastOutSlowIn,
                       firstCurve: Curves.fastOutSlowIn,
                       secondCurve: Curves.fastOutSlowIn.flipped,
-                      crossFadeState: selected ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+                      crossFadeState: selected
+                          ? CrossFadeState.showFirst
+                          : CrossFadeState.showSecond,
                     )
                   ],
                 ),
@@ -221,7 +233,8 @@ class _Label extends StatelessWidget {
   }
 }
 
-class _BottomNavigationBarState extends State<BubbleBottomBar> with TickerProviderStateMixin {
+class _BottomNavigationBarState extends State<BubbleBottomBar>
+    with TickerProviderStateMixin {
   List<AnimationController> _controllers = <AnimationController>[];
   List<CurvedAnimation> _animations;
   Color _backgroundColor;
@@ -234,7 +247,9 @@ class _BottomNavigationBarState extends State<BubbleBottomBar> with TickerProvid
   void didChangeDependencies() {
     super.didChangeDependencies();
     geometryListenable = Scaffold.geometryOf(context);
-    _flexTween = widget.hasNotch ? Tween<double>(begin: 1.15, end: 2.0) : Tween<double>(begin: 1.15, end: 1.75);
+    _flexTween = widget.hasNotch
+        ? Tween<double>(begin: 1.15, end: 2.0)
+        : Tween<double>(begin: 1.15, end: 1.75);
   }
 
 //  Animatable<double> _flexTween = widget.hasNotch ? Tween<double>(begin: 1.15, end: 2.0) : Tween<double>(begin: 1.15, end: 1.75);
@@ -242,13 +257,15 @@ class _BottomNavigationBarState extends State<BubbleBottomBar> with TickerProvid
   void _resetState() {
     for (AnimationController controller in _controllers) controller.dispose();
 
-    _controllers = List<AnimationController>.generate(widget.items.length, (int index) {
+    _controllers =
+        List<AnimationController>.generate(widget.items.length, (int index) {
       return AnimationController(
         duration: Duration(milliseconds: 200),
         vsync: this,
       )..addListener(_rebuild);
     });
-    _animations = List<CurvedAnimation>.generate(widget.items.length, (int index) {
+    _animations =
+        List<CurvedAnimation>.generate(widget.items.length, (int index) {
       return CurvedAnimation(
         parent: _controllers[index],
         curve: Curves.fastOutSlowIn,
@@ -275,7 +292,8 @@ class _BottomNavigationBarState extends State<BubbleBottomBar> with TickerProvid
     super.dispose();
   }
 
-  double _evaluateFlex(Animation<double> animation) => _flexTween.evaluate(animation);
+  double _evaluateFlex(Animation<double> animation) =>
+      _flexTween.evaluate(animation);
 
   @override
   void didUpdateWidget(BubbleBottomBar oldWidget) {
@@ -302,12 +320,14 @@ class _BottomNavigationBarState extends State<BubbleBottomBar> with TickerProvid
         _resetState();
       }
     } else {
-      if (_backgroundColor != widget.items[widget.currentIndex].backgroundColor) _backgroundColor = widget.items[widget.currentIndex].backgroundColor;
+      if (_backgroundColor != widget.items[widget.currentIndex].backgroundColor)
+        _backgroundColor = widget.items[widget.currentIndex].backgroundColor;
     }
   }
 
   List<Widget> _createTiles() {
-    final MaterialLocalizations localizations = MaterialLocalizations.of(context);
+    final MaterialLocalizations localizations =
+        MaterialLocalizations.of(context);
     assert(localizations != null);
     final List<Widget> children = <Widget>[];
     for (int i = 0; i < widget.items.length; i += 1) {
@@ -322,7 +342,8 @@ class _BottomNavigationBarState extends State<BubbleBottomBar> with TickerProvid
           },
           flex: _evaluateFlex(_animations[i]),
           selected: i == widget.currentIndex,
-          indexLabel: localizations.tabLabel(tabIndex: i + 1, tabCount: widget.items.length),
+          indexLabel: localizations.tabLabel(
+              tabIndex: i + 1, tabCount: widget.items.length),
           ink: widget.hasInk,
           inkColor: widget.inkColor,
         ),
@@ -354,11 +375,16 @@ class _BottomNavigationBarState extends State<BubbleBottomBar> with TickerProvid
         horizontal: 10,
       ),
       child: ConstrainedBox(
-        constraints: BoxConstraints(minHeight: kBottomNavigationBarHeight + additionalBottomPadding),
+        constraints: BoxConstraints(
+            minHeight: kBottomNavigationBarHeight + additionalBottomPadding),
         child: Material(
           type: MaterialType.transparency,
           child: Padding(
-            padding: EdgeInsets.only(bottom: additionalBottomPadding, right: widget.fabLocation == BubbleBottomBarFabLocation.end ? 72 : 0),
+            padding: EdgeInsets.only(
+                bottom: additionalBottomPadding,
+                right: widget.fabLocation == BubbleBottomBarFabLocation.end
+                    ? 72
+                    : 0),
             child: MediaQuery.removePadding(
               context: context,
               removeBottom: true,
@@ -374,13 +400,16 @@ class _BottomNavigationBarState extends State<BubbleBottomBar> with TickerProvid
   Widget build(BuildContext context) {
     assert(debugCheckHasDirectionality(context));
     assert(debugCheckHasMaterialLocalizations(context));
-    final double additionalBottomPadding = math.max(MediaQuery.of(context).padding.bottom - _kBottomMargin, 0.0);
+    final double additionalBottomPadding =
+        math.max(MediaQuery.of(context).padding.bottom - _kBottomMargin, 0.0);
     return Semantics(
         explicitChildNodes: true,
         child: widget.hasNotch
             ? PhysicalShape(
                 elevation: widget.elevation != null ? widget.elevation : 8.0,
-                color: widget.backgroundColor != null ? widget.backgroundColor : Colors.white,
+                color: widget.backgroundColor != null
+                    ? widget.backgroundColor
+                    : Colors.white,
                 clipper: _BubbleBottomBarClipper(
                   shape: CircularNotchedRectangle(),
                   geometry: geometryListenable,
@@ -390,9 +419,13 @@ class _BottomNavigationBarState extends State<BubbleBottomBar> with TickerProvid
               )
             : Material(
                 elevation: widget.elevation != null ? widget.elevation : 8.0,
-                color: widget.backgroundColor != null ? widget.backgroundColor : Colors.white,
+                color: widget.backgroundColor != null
+                    ? widget.backgroundColor
+                    : Colors.white,
                 child: _inner(additionalBottomPadding),
-                borderRadius: widget.borderRadius != null ? widget.borderRadius : BorderRadius.zero,
+                borderRadius: widget.borderRadius != null
+                    ? widget.borderRadius
+                    : BorderRadius.zero,
               ));
   }
 }
@@ -437,7 +470,9 @@ class _BubbleBottomBarClipper extends CustomClipper<Path> {
 
   @override
   bool shouldReclip(_BubbleBottomBarClipper oldClipper) {
-    return oldClipper.geometry != geometry || oldClipper.shape != shape || oldClipper.notchMargin != notchMargin;
+    return oldClipper.geometry != geometry ||
+        oldClipper.shape != shape ||
+        oldClipper.notchMargin != notchMargin;
   }
 }
 
@@ -446,10 +481,12 @@ BubbleBottomBarItem tab(String iconData, String tabName) {
       backgroundColor: primaryColor.withOpacity(0.4),
       icon: Image.asset(
         iconData,
-        color:appStore.iconSecondaryColor,
+        color: appStore.iconSecondaryColor,
         height: 20,
         width: 20,
       ),
-      activeIcon: Image.asset(iconData, height: 20, width: 20, color: primaryColor),
-      title: AutoSizeText(tabName, style: primaryTextStyle(color: primaryColor), maxLines: 1));
+      activeIcon:
+          Image.asset(iconData, height: 20, width: 20, color: primaryColor),
+      title: AutoSizeText(tabName,
+          style: primaryTextStyle(color: primaryColor), maxLines: 1));
 }

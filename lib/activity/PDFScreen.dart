@@ -55,23 +55,26 @@ class PDFScreenState extends State<PDFScreen> {
     return Scaffold(
       backgroundColor: appStore.scaffoldBackground,
       appBar: appBar(context, title: widget.mTitle),
-      body: Stack(
-        children: [
-          PDFView(
-            filePath: widget.mBookPath,
-            pageSnap: false,
-            swipeHorizontal: false,
-            onPageChanged: (int page, int total) {
-              print('page change: $page/$total');
-              setInt(PAGE_NUMBER_OFFLINE + widget.mBookId.toString(), page);
-              setState(() {
-                currentPage = page;
-              });
-            },
-            defaultPage: currentPage,
-          ).visible(!mIsLoading),
-          appLoaderWidget.center().visible(mIsLoading)
-        ],
+      body: Container(
+        color: Colors.black,
+        child: Stack(
+          children: [
+            PDFView(
+              filePath: widget.mBookPath,
+              pageSnap: false,
+              swipeHorizontal: false,
+              onPageChanged: (int page, int total) {
+                print('page change: $page/$total');
+                setInt(PAGE_NUMBER_OFFLINE + widget.mBookId.toString(), page);
+                setState(() {
+                  currentPage = page;
+                });
+              },
+              defaultPage: currentPage,
+            ).visible(!mIsLoading),
+            appLoaderWidget.center().visible(mIsLoading)
+          ],
+        ),
       ),
     );
   }

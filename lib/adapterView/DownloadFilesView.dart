@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterapp/activity/AudioBookPlayer.dart';
@@ -88,9 +87,11 @@ class _DownloadFilesViewState extends State<DownloadFilesView> {
     }
   }
 
+
   @override
   Widget build(BuildContext context) {
     final platform = Theme.of(context).platform;
+    // todo bookmarks of book
     return GestureDetector(
       child: Container(
         child: Column(
@@ -136,15 +137,19 @@ class _DownloadFilesViewState extends State<DownloadFilesView> {
                           color: appStore.iconColor,
                         ),
                       8.width,
-                      Expanded(
-                        child: Text(
-                          widget.downloads.name,
-                          textAlign: TextAlign.start,
-                          softWrap: false,
-                          overflow: TextOverflow.fade,
-                          style: TextStyle(
-                            fontSize: fontSizeNormal,
-                            color: appStore.appTextPrimaryColor,
+                      // file name
+                      Container(
+                        // color: Colors.yellow,
+                        child: Expanded(
+                          child: Text(
+                            widget.downloads.name,
+                            textAlign: TextAlign.start,
+                            softWrap: false,
+                            overflow: TextOverflow.fade,
+                            style: TextStyle(
+                              fontSize: fontSizeNormal,
+                              color: appStore.appTextPrimaryColor,
+                            ),
                           ),
                         ),
                       )
@@ -172,13 +177,18 @@ class _DownloadFilesViewState extends State<DownloadFilesView> {
           ],
         ),
       ),
+
+
+
+      // todo ontap of file
+
       onTap: () {
         Navigator.of(context).pop();
+        //for epub and pdf
         if (_isPDFFile) {
           Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (context) => ViewEPubFileNew(
+            MaterialPageRoute(builder: (context) => ViewEPubFileNew(
                   widget.mBookId,
                   widget.bookName,
                   widget.bookImage,
@@ -188,14 +198,20 @@ class _DownloadFilesViewState extends State<DownloadFilesView> {
                   _isFileExist),
             ),
           );
-        } else if (_isVideoFile) {
+        }
+         // for videofile
+        else if
+        (_isVideoFile) {
           Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => VideoBookPlayer(widget.downloads),
             ),
           );
-        } else if (_isAudioFile) {
+        }
+        // for audiofile
+        else if
+        (_isAudioFile) {
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -206,7 +222,10 @@ class _DownloadFilesViewState extends State<DownloadFilesView> {
               ),
             ),
           );
-        } else if (_isEpubFile) {
+        }
+        // for epubfile
+        else if
+        (_isEpubFile) {
           Navigator.push(
             context,
             MaterialPageRoute(

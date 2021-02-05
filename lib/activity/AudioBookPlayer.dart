@@ -1,14 +1,15 @@
 import 'dart:async';
-
+import 'dart:convert';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterapp/model/audioMark.dart';
 import 'package:flutterapp/utils/Colors.dart';
 import 'package:flutterapp/utils/Constant.dart';
 import 'package:flutterapp/utils/app_widget.dart';
-
+import 'package:flutterapp/utils/pref.dart';
 import '../main.dart';
 
 enum PlayerState { stopped, playing, paused }
@@ -42,7 +43,7 @@ class _AudioBookPlayerState extends State<AudioBookPlayer>
       _notification = state;
       switch (state) {
         case AppLifecycleState.resumed:
-          _play();
+          _play(_position);
           print("app in resumed");
           break;
         case AppLifecycleState.inactive:
@@ -88,6 +89,7 @@ class _AudioBookPlayerState extends State<AudioBookPlayer>
     super.initState();
     _initAudioPlayer();
     WidgetsBinding.instance.addObserver(this);
+    load();
   }
 
   @override
@@ -104,11 +106,62 @@ class _AudioBookPlayerState extends State<AudioBookPlayer>
     Navigator.of(context).pop();
   }
 
+  // List<Duration> marksList;
+
+  /// shared pref method
+  AudioMark events = AudioMark();
+
+  load() async {
+    String json = await Pref().getValueByKey(Pref().eventsKey);
+    if (json != null) {
+      events = AudioMark.fromJson(jsonDecode(json));
+    }
+  }
+
+  save() async {
+    events.mark = [];
+    events.mark.insert(0, Mark(audioId: url, marksList: [_position.inMilliseconds]));
+    Map value = events.toJson();
+    print('shared prefs saving data ${jsonEncode(value)}');
+    await Pref().setValueByKey(Pref().eventsKey, jsonEncode(value));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: appStore.scaffoldBackground,
-      appBar: appBar(context, title: widget.bookName),
+      appBar: appBar(context, title: widget.bookName, actions: <Widget>[
+        GestureDetector(
+          child: Container(
+            margin: EdgeInsets.all(10),
+            padding: EdgeInsets.fromLTRB(10, 5, 10, 10),
+            decoration: BoxDecoration(
+              color: appStore.editTextBackColor,
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(5),
+                  topRight: Radius.circular(5),
+                  bottomLeft: Radius.circular(5),
+                  bottomRight: Radius.circular(5)),
+              boxShadow: [
+                BoxShadow(
+                  color: appStore.isDarkModeOn
+                      ? appStore.scaffoldBackground
+                      : shadow_color,
+                  blurRadius: 5,
+                  offset: Offset(0, 3), // changes position of shadow
+                ),
+              ],
+            ),
+            child: Icon(
+              Icons.list,
+              color: Colors.black,
+            ),
+          ),
+          onTap: () {
+            audioMarks(context);
+          },
+        ),
+      ]),
       body: Container(
         padding: EdgeInsets.only(top: 20),
         height: MediaQuery.of(context).size.height,
@@ -205,13 +258,46 @@ class _AudioBookPlayerState extends State<AudioBookPlayer>
                         child: Center(
                           child: IconButton(
                             key: Key('play_button'),
-                            onPressed: _isPlaying ? null : () => _play(),
+                            onPressed:
+                                _isPlaying ? null : () => _play(_position),
                             iconSize: 42.0,
                             icon: Icon(Icons.play_arrow),
                             color: primaryColor,
                           ),
                         ),
                       ),
+                SizedBox(
+                  width: 20,
+                ),
+                Container(
+                  margin: EdgeInsets.only(top: 20),
+                  width: 50.0,
+                  height: 50.0,
+                  decoration: new BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: LinearGradient(
+                        begin: Alignment(6.123234262925839e-17, 1),
+                        end: Alignment(-1, 6.123234262925839e-17),
+                        colors: [
+                          Color.fromRGBO(185, 205, 254, 1),
+                          Color.fromRGBO(182, 178, 255, 1)
+                        ],
+                      )),
+                  child: Center(
+                    child: IconButton(
+                      // onPressed: _isPlaying ? null : () => _play(),
+                      onPressed: () {
+                        print('Audio mark pressed total duration $_duration');
+                        print('Audio mark pressed text duration ${_position}');
+
+                        save();
+                      },
+                      iconSize: 30.0,
+                      icon: Icon(Icons.flag_outlined),
+                      color: primaryColor,
+                    ),
+                  ),
+                ),
               ],
             ),
             Column(
@@ -269,6 +355,97 @@ class _AudioBookPlayerState extends State<AudioBookPlayer>
     );
   }
 
+// by grk
+  void audioMarks(BuildContext context) {
+    showModalBottomSheet(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(30.0),
+          ),
+        ),
+        backgroundColor: Colors.white,
+        context: context,
+        isScrollControlled: true,
+        builder: (context) =>
+            StatefulBuilder(builder: (BuildContext context, StateSetter state) {
+              return Container(
+                  height: MediaQuery.of(context).size.height * .70,
+                  //height of bottomsheet
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 05,
+                  ),
+                  // color: Colors.green,
+                  child: Column(
+                    children: [
+                      AppBar(
+                        automaticallyImplyLeading: false,
+                        title: Center(
+                            child: Text(
+                          'Your Audio Marks',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.black),
+                        )),
+                        backgroundColor: Colors.transparent,
+                        elevation: 0,
+                        shadowColor: Colors.black,
+                      ),
+                      Container(
+                        height: MediaQuery.of(context).size.height * .60,
+                        child: (widget.url == events.mark[0].audioId &&
+                                events.mark.length > 0)
+                            ? ListView.builder(
+                                itemCount: events.mark.length,
+                                itemBuilder: (context, int index) {
+                                  Duration duration = new Duration(
+                                      milliseconds:
+                                          events.mark[index].marksList[index]);
+                                  print(
+                                      "the duration from load shared $duration");
+                                  String markToText =
+                                      duration?.toString()?.split(".")?.first ??
+                                          '';
+                                  return ListTile(
+                                    dense: false,
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                      _play(duration);
+                                      print('play @ $index, ${duration}');
+                                    },
+                                    title: Text(markToText),
+                                    trailing: GestureDetector(
+                                        onTap: () {
+                                          print(
+                                              'delete clicked in bottom sheet');
+                                          state(() {
+                                            // .removeAt(index);
+                                          });
+                                        },
+                                        child: Container(
+                                            height: 50,
+                                            width: 50,
+                                            // color: Colors.black,
+                                            child: Icon(
+                                              Icons.delete,
+                                              color: Colors.red,
+                                            ))),
+                                  );
+                                },
+                              )
+                            : Container(
+                                // color: Colors.red,
+                                child: Center(
+                                  child: Text(
+                                    "No Audio Marks",
+                                    style: TextStyle(color: Colors.black),
+                                  ),
+                                ),
+                              ),
+                      )
+                    ],
+                  ));
+            }));
+  }
+
   void _initAudioPlayer() {
     _audioPlayer = AudioPlayer(mode: mode);
     _durationSubscription = _audioPlayer.onDurationChanged.listen((duration) {
@@ -318,7 +495,7 @@ class _AudioBookPlayerState extends State<AudioBookPlayer>
       if (!mounted) return;
     });
 
-    _play();
+    _play(_position);
   }
 
   double showProgressBar() {
@@ -357,7 +534,7 @@ class _AudioBookPlayerState extends State<AudioBookPlayer>
     return text;
   }
 
-  Future<int> _play() async {
+  Future<int> _play(_position) async {
     final playPosition = (_position != null &&
             _duration != null &&
             _position.inMilliseconds > 0 &&

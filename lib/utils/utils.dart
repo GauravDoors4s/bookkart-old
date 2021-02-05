@@ -23,16 +23,13 @@ Future<bool> isLoggedIn() async {
 Future clearSearchHistory() async {
   await setString(SEARCH_TEXT, "");
 }
-
 Future<bool> checkPermission(widget) async {
   if (widget.platform == TargetPlatform.android) {
-    PermissionStatus permission = await PermissionHandler()
-        .checkPermissionStatus(PermissionGroup.storage);
+    PermissionStatus permission = await Permission.storage.status;
     if (permission != PermissionStatus.granted) {
-      Map<PermissionGroup, PermissionStatus> permissions =
-          await PermissionHandler()
-              .requestPermissions([PermissionGroup.storage]);
-      if (permissions[PermissionGroup.storage] == PermissionStatus.granted) {
+      Map<Permission, PermissionStatus> permissions =
+          await [Permission.storage].request();
+      if (permissions[Permission.storage] == PermissionStatus.granted) {
         return true;
       }
     } else {
@@ -83,6 +80,7 @@ Future<String> get localPath async {
   printLogs(
       "localPath: " + directory.absolute.path + "/" + userId.toString() + "");
   return directory.absolute.path + "/" + userId.toString() + "";
+
 }
 
 Future addToSearchArray(searchText) async {

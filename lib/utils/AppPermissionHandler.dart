@@ -3,7 +3,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 import 'app_widget.dart';
 
-Future<bool> requestPermissionGranted(context, requestPermissions) async {
+/*Future<bool> requestPermissionGranted(context, requestPermissions) async {
   var result = await PermissionHandler().requestPermissions(requestPermissions);
   switch (result[PermissionGroup.storage]) {
     case PermissionStatus.granted:
@@ -31,4 +31,4 @@ Future<bool> requestPermissionGranted(context, requestPermissions) async {
     default:
       return false;
   }
-}
+}*/

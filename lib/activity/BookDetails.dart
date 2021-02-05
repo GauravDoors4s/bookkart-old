@@ -9,6 +9,7 @@ import 'package:flutterapp/adapterView/DownloadFilesView.dart';
 import 'package:flutterapp/adapterView/Review.dart';
 import 'package:flutterapp/adapterView/UpsellBookList.dart';
 import 'package:flutterapp/app_localizations.dart';
+import 'package:flutterapp/confi/application.dart';
 import 'package:flutterapp/main.dart';
 import 'package:flutterapp/model/AddtoBookmarkResponse.dart';
 import 'package:flutterapp/model/CheckoutResponse.dart';
@@ -16,21 +17,21 @@ import 'package:flutterapp/model/DashboardResponse.dart';
 import 'package:flutterapp/model/OrderResponse.dart';
 import 'package:flutterapp/model/PaidBookResponse.dart';
 import 'package:flutterapp/network/rest_api_call.dart';
-import 'package:flutterapp/utils/AppPermissionHandler.dart';
+// import 'package:flutterapp/utils/AppPermissionHandler.dart';
 import 'package:flutterapp/utils/Colors.dart';
 import 'package:flutterapp/utils/Constant.dart';
-import 'package:flutterapp/utils/admob_utils.dart';
+// import 'package:flutterapp/utils/admob_utils.dart';
 import 'package:flutterapp/utils/app_widget.dart';
 import 'package:flutterapp/utils/utils.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:permission_handler/permission_handler.dart';
+// import 'package:permission_handler/permission_handler.dart';
 import 'AuthorDetails.dart';
 import 'ErrorView.dart';
 import 'NoInternetConnection.dart';
 import 'SignInScreen.dart';
 import 'ViewAllBooks.dart';
 import 'WebViewScreen.dart';
-import 'package:admob_flutter/admob_flutter.dart';
+// import 'package:admob_flutter/admob_flutter.dart';
 
 // ignore: must_be_immutable
 class BookDetails extends StatefulWidget {
@@ -55,7 +56,8 @@ class _BookDetailsState extends State<BookDetails> {
   var mDownloadFileArray = List<Downloads>();
   var mDownloadPaidFileArray = List<Downloads>();
   bool isLoginIn = false;
-  AdmobInterstitial interstitialAd;
+
+/*  AdmobInterstitial interstitialAd;*/
   GlobalKey<ScaffoldState> scaffoldState = GlobalKey();
 
   @override
@@ -63,10 +65,10 @@ class _BookDetailsState extends State<BookDetails> {
     super.initState();
     getBookDetails();
 
-    init();
+    /*  init();*/
   }
 
-  init() async {
+/*  init() async {
     isLoginIn = await getBool(IS_LOGGED_IN);
     interstitialAd = AdmobInterstitial(
       adUnitId: getInterstitialAdUnitId(),
@@ -120,7 +122,7 @@ class _BookDetailsState extends State<BookDetails> {
         break;
       default:
     }
-  }
+  }*/
 
   void showSnackBar(String content) {
     scaffoldState.currentState.showSnackBar(
@@ -136,13 +138,13 @@ class _BookDetailsState extends State<BookDetails> {
     if (mounted) super.setState(fn);
   }
 
-  @override
+/*  @override
   void dispose() async {
     if (await interstitialAd.isLoaded) {
       interstitialAd.show();
     }
     super.dispose();
-  }
+  }*/
 
   Future deleteOrder(orderId) async {
     if (!await isLoggedIn()) {
@@ -216,7 +218,7 @@ class _BookDetailsState extends State<BookDetails> {
 
             await checkoutURLRestApi(requestCheckout).then((res) async {
               setState(() {
-                mFetchingFile = false; 
+                mFetchingFile = false;
               });
               CheckoutResponse checkoutResponse =
                   CheckoutResponse.fromJson(res);
@@ -258,16 +260,12 @@ class _BookDetailsState extends State<BookDetails> {
     );
   }
 
+
   Future postPlaceOrder() async {
     if (platform == TargetPlatform.android) {
-      var result =
-          await requestPermissionGranted(context, [PermissionGroup.storage]);
-      if (result) {
-        placeOrder();
-      }
-    } else {
-      placeOrder();
+ ApplicationGlobal.requestPermission(() { placeOrder(); });
     }
+
   }
 
   Future postReviewApi(review, rating) async {
@@ -432,7 +430,7 @@ class _BookDetailsState extends State<BookDetails> {
       }
     });
   }
-
+// bookmark
   Future addToBookmark() async {
     if (!await isLoggedIn()) {
       SignInScreen().launch(context);
@@ -671,6 +669,7 @@ class _BookDetailsState extends State<BookDetails> {
                             textAlign: TextAlign.center,
                           ),
                         ),
+                        //View files
                         GestureDetector(
                           onTap: () {
                             (mBookDetailsData.isPurchased || mIsFreeBook)
@@ -954,7 +953,9 @@ class _BookDetailsState extends State<BookDetails> {
                                                     children: <Widget>[
                                                       Text(
                                                         mBookDetailsData
-                                                            .store.name.toString().trim(),
+                                                            .store.name
+                                                            .toString()
+                                                            .trim(),
                                                         textAlign:
                                                             TextAlign.start,
                                                         maxLines: 1,
@@ -1264,14 +1265,14 @@ class _BookDetailsState extends State<BookDetails> {
               )
           ],
         ),
-        bottomNavigationBar: Container(
+        /*    bottomNavigationBar: Container(
           width: context.width(),
           color: white,
           child: AdmobBanner(
             adUnitId: getBannerAdUnitId(),
             adSize: AdmobBannerSize.BANNER,
           ).visible(isAdsLoading == true),
-        ),
+        ),*/
       ),
     );
   }
@@ -1350,13 +1351,16 @@ class _BookDetailsState extends State<BookDetails> {
         return SingleChildScrollView(
           primary: false,
           child: Container(
+            // color: Colors.red,
             padding: EdgeInsets.only(left: 20, right: 20, bottom: 20),
             child: Column(
               children: <Widget>[
+                // title and close
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
+                    //lebel
                     Container(
                       margin: EdgeInsets.only(
                         top: spacing_standard_new,
@@ -1372,6 +1376,7 @@ class _BookDetailsState extends State<BookDetails> {
                         textAlign: TextAlign.center,
                       ),
                     ),
+                   // close icon
                     GestureDetector(
                       child: Icon(
                         Icons.close,
@@ -1382,12 +1387,15 @@ class _BookDetailsState extends State<BookDetails> {
                     )
                   ],
                 ),
+                // divider
                 Container(
                   margin: EdgeInsets.only(top: spacing_standard_new),
                   height: 2,
                   color: lightGrayColor,
                 ),
+                // file context
                 Container(
+                  // color: Colors.green,
                   margin: EdgeInsets.only(top: 20),
                   child: ListView.builder(
                     scrollDirection: Axis.vertical,
@@ -1612,7 +1620,7 @@ class _BookDetailsState extends State<BookDetails> {
                     )
                   ],
                 ),
-                FittedBox(
+              /*  FittedBox(
                   child: AppButton(
                     value: keyString(context, "lbl_buy_now"),
                     onPressed: () {
@@ -1620,7 +1628,7 @@ class _BookDetailsState extends State<BookDetails> {
                       postPlaceOrder();
                     },
                   ).paddingOnly(top: 16, bottom: 16),
-                )
+                )*/
               ],
             ),
           ),
