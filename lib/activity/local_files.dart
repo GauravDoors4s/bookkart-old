@@ -130,7 +130,7 @@ class _LocalFilesState extends State<LocalFiles> with WidgetsBindingObserver {
   List<PdfBookMark> pageMarksList = List<PdfBookMark>();
   List<int> marksList = [];
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) {/*
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -147,10 +147,10 @@ class _LocalFilesState extends State<LocalFiles> with WidgetsBindingObserver {
             child: Text(
                 "file: " + (openFileUrl != null ? openFileUrl : "Nothing!"))),
       ),
-    );
- /*   return Container(
-
     );*/
+    return Container(
+
+    );
   }
 
   void checkUrl() {}
