@@ -21,12 +21,11 @@ class AudioBookPlayer extends StatefulWidget {
   final String bookName;
   final String bookImage;
 
-  AudioBookPlayer(
-      {Key key,
-      @required this.url,
-      this.bookImage,
-      this.bookName,
-      this.mode = PlayerMode.MEDIA_PLAYER})
+  AudioBookPlayer({Key key,
+    @required this.url,
+    this.bookImage,
+    this.bookName,
+    this.mode = PlayerMode.MEDIA_PLAYER})
       : super(key: key);
 
   @override
@@ -78,9 +77,17 @@ class _AudioBookPlayerState extends State<AudioBookPlayer>
 
   get _isPlaying => _playerState == PlayerState.playing;
 
-  get _durationText => _duration?.toString()?.split('.')?.first ?? '';
+  get _durationText =>
+      _duration
+          ?.toString()
+          ?.split('.')
+          ?.first ?? '';
 
-  get _positionText => _position?.toString()?.split('.')?.first ?? '';
+  get _positionText =>
+      _position
+          ?.toString()
+          ?.split('.')
+          ?.first ?? '';
 
   _AudioBookPlayerState(this.url, this.mode);
 
@@ -119,8 +126,18 @@ class _AudioBookPlayerState extends State<AudioBookPlayer>
   }
 
   save() async {
-    events.mark = [];
-    events.mark.insert(0, Mark(audioId: url, marksList: [_position.inMilliseconds]));
+    load();
+    if (events.mark.length == 0) {
+      events.mark = [];
+      events.mark.insert(0, Mark(audioId: url, marksList: [_position.inMilliseconds]));
+    }
+    for(var i=0; i< events.mark.length; i++){
+      if (events.mark[i].audioId == url) {
+        events.mark[i].marksList.insert(0, _position.inMilliseconds);
+      }
+
+
+    }
     Map value = events.toJson();
     print('shared prefs saving data ${jsonEncode(value)}');
     await Pref().setValueByKey(Pref().eventsKey, jsonEncode(value));
@@ -158,13 +175,17 @@ class _AudioBookPlayerState extends State<AudioBookPlayer>
             ),
           ),
           onTap: () {
+            load();
             audioMarks(context);
           },
         ),
       ]),
       body: Container(
         padding: EdgeInsets.only(top: 20),
-        height: MediaQuery.of(context).size.height,
+        height: MediaQuery
+            .of(context)
+            .size
+            .height,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -179,17 +200,18 @@ class _AudioBookPlayerState extends State<AudioBookPlayer>
                     clipBehavior: Clip.antiAliasWithSaveLayer,
                     child: (isRendering)
                         ? Container(
-                            width: 220, height: 308, child: bookLoaderWidget)
+                        width: 220, height: 308, child: bookLoaderWidget)
                         : CachedNetworkImage(
-                            placeholder: (context, url) => Center(
-                              child: Container(
-                                  width: 220,
-                                  height: 308,
-                                  child: bookLoaderWidget),
-                            ),
-                            imageUrl: widget.bookImage,
-                            fit: BoxFit.fill,
+                      placeholder: (context, url) =>
+                          Center(
+                            child: Container(
+                                width: 220,
+                                height: 308,
+                                child: bookLoaderWidget),
                           ),
+                      imageUrl: widget.bookImage,
+                      fit: BoxFit.fill,
+                    ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5.0),
                     ),
@@ -220,52 +242,52 @@ class _AudioBookPlayerState extends State<AudioBookPlayer>
               children: [
                 _isPlaying
                     ? Container(
-                        margin: EdgeInsets.only(top: 20),
-                        width: 60.0,
-                        height: 60.0,
-                        decoration: new BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: LinearGradient(
-                              begin: Alignment(6.123234262925839e-17, 1),
-                              end: Alignment(-1, 6.123234262925839e-17),
-                              colors: [
-                                Color.fromRGBO(185, 205, 254, 1),
-                                Color.fromRGBO(182, 178, 255, 1)
-                              ],
-                            )),
-                        child: IconButton(
-                          key: Key('pause_button'),
-                          onPressed: _isPlaying ? () => _pause() : null,
-                          iconSize: 42.0,
-                          icon: Icon(Icons.pause),
-                          color: primaryColor,
-                        ),
-                      )
+                  margin: EdgeInsets.only(top: 20),
+                  width: 60.0,
+                  height: 60.0,
+                  decoration: new BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: LinearGradient(
+                        begin: Alignment(6.123234262925839e-17, 1),
+                        end: Alignment(-1, 6.123234262925839e-17),
+                        colors: [
+                          Color.fromRGBO(185, 205, 254, 1),
+                          Color.fromRGBO(182, 178, 255, 1)
+                        ],
+                      )),
+                  child: IconButton(
+                    key: Key('pause_button'),
+                    onPressed: _isPlaying ? () => _pause() : null,
+                    iconSize: 42.0,
+                    icon: Icon(Icons.pause),
+                    color: primaryColor,
+                  ),
+                )
                     : Container(
-                        margin: EdgeInsets.only(top: 20),
-                        width: 60.0,
-                        height: 60.0,
-                        decoration: new BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: LinearGradient(
-                              begin: Alignment(6.123234262925839e-17, 1),
-                              end: Alignment(-1, 6.123234262925839e-17),
-                              colors: [
-                                Color.fromRGBO(185, 205, 254, 1),
-                                Color.fromRGBO(182, 178, 255, 1)
-                              ],
-                            )),
-                        child: Center(
-                          child: IconButton(
-                            key: Key('play_button'),
-                            onPressed:
-                                _isPlaying ? null : () => _play(_position),
-                            iconSize: 42.0,
-                            icon: Icon(Icons.play_arrow),
-                            color: primaryColor,
-                          ),
-                        ),
-                      ),
+                  margin: EdgeInsets.only(top: 20),
+                  width: 60.0,
+                  height: 60.0,
+                  decoration: new BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: LinearGradient(
+                        begin: Alignment(6.123234262925839e-17, 1),
+                        end: Alignment(-1, 6.123234262925839e-17),
+                        colors: [
+                          Color.fromRGBO(185, 205, 254, 1),
+                          Color.fromRGBO(182, 178, 255, 1)
+                        ],
+                      )),
+                  child: Center(
+                    child: IconButton(
+                      key: Key('play_button'),
+                      onPressed:
+                      _isPlaying ? null : () => _play(_position),
+                      iconSize: 42.0,
+                      icon: Icon(Icons.play_arrow),
+                      color: primaryColor,
+                    ),
+                  ),
+                ),
                 SizedBox(
                   width: 20,
                 ),
@@ -313,11 +335,11 @@ class _AudioBookPlayerState extends State<AudioBookPlayer>
                         trackShape: RoundedRectSliderTrackShape(),
                         trackHeight: 4.0,
                         thumbShape:
-                            RoundSliderThumbShape(enabledThumbRadius: 12.0),
+                        RoundSliderThumbShape(enabledThumbRadius: 12.0),
                         thumbColor: accentColor,
                         overlayColor: Colors.red.withAlpha(32),
                         overlayShape:
-                            RoundSliderOverlayShape(overlayRadius: 28.0),
+                        RoundSliderOverlayShape(overlayRadius: 28.0),
                         tickMarkShape: RoundSliderTickMarkShape(),
                         activeTickMarkColor: Colors.red[700],
                         inactiveTickMarkColor: Colors.red[100],
@@ -369,7 +391,10 @@ class _AudioBookPlayerState extends State<AudioBookPlayer>
         builder: (context) =>
             StatefulBuilder(builder: (BuildContext context, StateSetter state) {
               return Container(
-                  height: MediaQuery.of(context).size.height * .70,
+                  height: MediaQuery
+                      .of(context)
+                      .size
+                      .height * .70,
                   //height of bottomsheet
                   padding: EdgeInsets.symmetric(
                     horizontal: 05,
@@ -381,65 +406,71 @@ class _AudioBookPlayerState extends State<AudioBookPlayer>
                         automaticallyImplyLeading: false,
                         title: Center(
                             child: Text(
-                          'Your Audio Marks',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(color: Colors.black),
-                        )),
+                              'Your Audio Marks',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(color: Colors.black),
+                            )),
                         backgroundColor: Colors.transparent,
                         elevation: 0,
                         shadowColor: Colors.black,
                       ),
                       Container(
-                        height: MediaQuery.of(context).size.height * .60,
+                        height: MediaQuery
+                            .of(context)
+                            .size
+                            .height * .60,
                         child: (widget.url == events.mark[0].audioId &&
-                                events.mark.length > 0)
+                            events.mark.length > 0)
                             ? ListView.builder(
-                                itemCount: events.mark.length,
-                                itemBuilder: (context, int index) {
-                                  Duration duration = new Duration(
-                                      milliseconds:
-                                          events.mark[index].marksList[index]);
-                                  print(
-                                      "the duration from load shared $duration");
-                                  String markToText =
-                                      duration?.toString()?.split(".")?.first ??
-                                          '';
-                                  return ListTile(
-                                    dense: false,
-                                    onTap: () {
-                                      Navigator.pop(context);
-                                      _play(duration);
-                                      print('play @ $index, ${duration}');
-                                    },
-                                    title: Text(markToText),
-                                    trailing: GestureDetector(
-                                        onTap: () {
-                                          print(
-                                              'delete clicked in bottom sheet');
-                                          state(() {
-                                            // .removeAt(index);
-                                          });
-                                        },
-                                        child: Container(
-                                            height: 50,
-                                            width: 50,
-                                            // color: Colors.black,
-                                            child: Icon(
-                                              Icons.delete,
-                                              color: Colors.red,
-                                            ))),
-                                  );
-                                },
-                              )
+                          itemCount: events.mark[0].marksList.length,
+                          itemBuilder: (context, int index) {
+                            Duration duration = new Duration(
+                                milliseconds:
+                                events.mark[0].marksList[index]);
+                            print(
+                                "the duration from load shared $duration");
+                            String markToText =
+                                duration
+                                    ?.toString()
+                                    ?.split(".")
+                                    ?.first ??
+                                    '';
+                            return ListTile(
+                              dense: false,
+                              onTap: () {
+                                Navigator.pop(context);
+                                _play(duration);
+                                print('play @ $index, ${duration}');
+                              },
+                              title: Text(markToText),
+                              trailing: GestureDetector(
+                                  onTap: () {
+                                    print(
+                                        'delete clicked in bottom sheet');
+                                    state(() {
+                                      // .removeAt(index);
+                                    });
+                                  },
+                                  child: Container(
+                                      height: 50,
+                                      width: 50,
+                                      // color: Colors.black,
+                                      child: Icon(
+                                        Icons.delete,
+                                        color: Colors.red,
+                                      ))),
+                            );
+                          },
+                        )
                             : Container(
-                                // color: Colors.red,
-                                child: Center(
-                                  child: Text(
-                                    "No Audio Marks",
-                                    style: TextStyle(color: Colors.black),
-                                  ),
-                                ),
-                              ),
+                          // color: Colors.red,
+                          child: Center(
+                            child: Text(
+                              "No Audio Marks",
+                              style: TextStyle(color: Colors.black),
+                            ),
+                          ),
+                        ),
                       )
                     ],
                   ));
@@ -450,7 +481,9 @@ class _AudioBookPlayerState extends State<AudioBookPlayer>
     _audioPlayer = AudioPlayer(mode: mode);
     _durationSubscription = _audioPlayer.onDurationChanged.listen((duration) {
       setState(() => _duration = duration);
-      if (Theme.of(context).platform == TargetPlatform.iOS) {
+      if (Theme
+          .of(context)
+          .platform == TargetPlatform.iOS) {
         _audioPlayer.startHeadlessService();
         _audioPlayer.setNotification(
             title: 'App Name',
@@ -467,17 +500,18 @@ class _AudioBookPlayerState extends State<AudioBookPlayer>
     });
 
     _positionSubscription =
-        _audioPlayer.onAudioPositionChanged.listen((p) => setState(() {
+        _audioPlayer.onAudioPositionChanged.listen((p) =>
+            setState(() {
               _position = p;
             }));
 
     _playerCompleteSubscription =
         _audioPlayer.onPlayerCompletion.listen((event) {
-      _onComplete();
-      setState(() {
-        _position = _duration;
-      });
-    });
+          _onComplete();
+          setState(() {
+            _position = _duration;
+          });
+        });
 
     _playerErrorSubscription = _audioPlayer.onPlayerError.listen((msg) {
       setState(() {
@@ -536,9 +570,9 @@ class _AudioBookPlayerState extends State<AudioBookPlayer>
 
   Future<int> _play(_position) async {
     final playPosition = (_position != null &&
-            _duration != null &&
-            _position.inMilliseconds > 0 &&
-            _position.inMilliseconds < _duration.inMilliseconds)
+        _duration != null &&
+        _position.inMilliseconds > 0 &&
+        _position.inMilliseconds < _duration.inMilliseconds)
         ? _position
         : null;
     final result = await _audioPlayer.play(url, position: playPosition);
