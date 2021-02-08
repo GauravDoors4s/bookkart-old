@@ -131,10 +131,15 @@ class _AudioBookPlayerState extends State<AudioBookPlayer>
       events.mark = [];
       events.mark.insert(0, Mark(audioId: url, marksList: [_position.inMilliseconds]));
     }
-    for(var i=0; i< events.mark.length; i++){
-      if (events.mark[i].audioId == url) {
-        events.mark[i].marksList.insert(0, _position.inMilliseconds);
-      }
+    else {
+      for(var i=0; i< events.mark.length; i++){
+        load();
+        if (events.mark[i].audioId == url) {
+          events.mark[i].marksList.insert(0, _position.inMilliseconds);
+        }
+    }
+
+
 
 
     }
@@ -142,6 +147,25 @@ class _AudioBookPlayerState extends State<AudioBookPlayer>
     print('shared prefs saving data ${jsonEncode(value)}');
     await Pref().setValueByKey(Pref().eventsKey, jsonEncode(value));
   }
+
+  delete() async {
+    if (events.mark.length > 0) {
+      for(var i=0; i< events.mark.length; i++){
+        if (events.mark[i].audioId == url) {
+          events.mark[i].marksList.removeAt(i);
+        }
+        if(events.mark[i].audioId == url && events.mark[i].marksList.isEmpty){
+          events.mark.removeAt(i);
+        }
+      }
+    }
+
+    Map value = events.toJson();
+
+    await Pref().setValueByKey(Pref().eventsKey, jsonEncode(value));
+    print('shared prefs after deleting saving data ${jsonEncode(value)}');
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -390,7 +414,8 @@ class _AudioBookPlayerState extends State<AudioBookPlayer>
         isScrollControlled: true,
         builder: (context) =>
             StatefulBuilder(builder: (BuildContext context, StateSetter state) {
-              return Container(
+
+              return (events.mark.isNotEmpty) ? Container(
                   height: MediaQuery
                       .of(context)
                       .size
@@ -448,7 +473,7 @@ class _AudioBookPlayerState extends State<AudioBookPlayer>
                                     print(
                                         'delete clicked in bottom sheet');
                                     state(() {
-                                      // .removeAt(index);
+                                      delete();
                                     });
                                   },
                                   child: Container(
@@ -463,6 +488,47 @@ class _AudioBookPlayerState extends State<AudioBookPlayer>
                           },
                         )
                             : Container(
+                          // color: Colors.red,
+                          child: Center(
+                            child: Text(
+                              "No Audio Marks",
+                              style: TextStyle(color: Colors.black),
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  )) :
+              Container(
+                  height: MediaQuery
+                      .of(context)
+                      .size
+                      .height * .70,
+                  //height of bottomsheet
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 05,
+                  ),
+                  // color: Colors.green,
+                  child: Column(
+                    children: [
+                      AppBar(
+                        automaticallyImplyLeading: false,
+                        title: Center(
+                            child: Text(
+                              'Your Audio Marks',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(color: Colors.black),
+                            )),
+                        backgroundColor: Colors.transparent,
+                        elevation: 0,
+                        shadowColor: Colors.black,
+                      ),
+                      Container(
+                        height: MediaQuery
+                            .of(context)
+                            .size
+                            .height * .60,
+                        child:  Container(
                           // color: Colors.red,
                           child: Center(
                             child: Text(
