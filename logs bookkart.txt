@@ -1,0 +1,197 @@
+ios version 14.4
+iphone 12 pro max
+
+10/02/2021
+
+The ios app is not buiding beacuse of dependencies  conflicts.
+The Dependency which are giving conflicts occur in beginnings are epub and folioreaderkit.
+here is the debug console prints
+
+[!] CocoaPods could not find compatible versions for pod "MenuItemKit":
+      In Podfile:
+        FolioReaderKit (from `https://github.com/FolioReader/FolioReaderKit.git`) was resolved to 1.4.0, which depends on
+          MenuItemKit (= 3.1.3)
+
+        epub_viewer (from `.symlinks/plugins/epub_viewer/ios`) was resolved to 0.0.1, which depends on
+          EpubViewerKit (~> 0.1.2) was resolved to 0.1.2, which depends on
+            MenuItemKit (= 4.0.1)
+
+and after downgrading epub from 0.1.9 to 0.1.8  we have discovered  in unencountered error.
+here is the log
+error: unable to read property list from file: /Users/apple/AndroidStudioProjects/bookkart/ios/Runner/Info.plist: The operation couldn’t be completed. (XCBUtil.PropertyListConversionError error 1.) (in target 'Runner' from project 'Runner')
+
+ios version 14.4
+iphone 12 pro max
+ios version 13.5
+iphone 11
+
+11/02/2021
+
+####
+  error: No profiles for 'com.iqonic.booksto.OneSignalNotificationServiceExtension' were found: Xcode couldn't find any iOS App Development provisioning profiles matching
+               'com.iqonic.booksto.OneSignalNotificationServiceExtension'. Automatic signing is disabled and unable to generate a profile. To enable automatic signing, pass
+               -allowProvisioningUpdates to xcodebuild. (in target 'OneSignalNotificationServiceExtension' from project 'Runner')
+               error: No profiles for 'com.iqonic.booksto' were found: Xcode couldn't find any iOS App Development provisioning profiles matching 'com.iqonic.booksto'. Automatic signing
+is disabled
+               and unable to generate a profile. To enable automatic signing, pass -allowProvisioningUpdates to xcodebuild. (in target 'Runner' from project 'Runner')
+
+
+########
+Xcode build failed due to concurrent builds, will retry in 2 seconds.
+Xcode build done.                                           108.5s
+Failed to build iOS app
+Error output from Xcode build:
+↳
+    ** BUILD FAILED **
+
+
+Xcode's output:
+↳
+    /Users/apple/Dev/flutter/.pub-cache/hosted/pub.dartlang.org/image_picker-0.6.4/ios/Classes/FLTImagePickerPlugin.m:137:20: warning: 'UIAlertView' is deprecated: first deprecated in iOS 9.0 - UIAlertView is deprecated. Use UIAlertController with a preferredStyle of UIAlertControllerStyleAlert instead [-Wdeprecated-declarations]
+        [[[UIAlertView alloc] initWithTitle:@"Error"
+                       ^
+    In module 'UIKit' imported from /Users/apple/AndroidStudioProjects/bookkart/ios/Pods/Target Support Files/image_picker/image_picker-prefix.pch:2:
+    /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator14.4.sdk/System/Library/Frameworks/UIKit.framework/Headers/UIAlertView.h:27:12: note: 'UIAlertView' has been explicitly marked deprecated here
+    @interface UIAlertView : UIView
+               ^
+    1 warning generated.
+    /Users/apple/Dev/flutter/.pub-cache/hosted/pub.dartlang.org/webview_flutter-0.3.22+1/ios/Classes/FlutterWebView.m:367:23: warning: 'mediaPlaybackRequiresUserAction' is deprecated: first deprecated in iOS 9.0 [-Wdeprecated-declarations]
+            configuration.mediaPlaybackRequiresUserAction = true;
+                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                          mediaTypesRequiringUserActionForPlayback
+    In module 'WebKit' imported from /Users/apple/Dev/flutter/.pub-cache/hosted/pub.dartlang.org/webview_flutter-0.3.22+1/ios/Classes/FlutterWebView.h:6:
+    /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator14.4.sdk/System/Library/Frameworks/WebKit.framework/Headers/WKWebViewConfiguration.h:211:28: note: 'mediaPlaybackRequiresUserAction' has been explicitly marked deprecated here
+    @property (nonatomic) BOOL mediaPlaybackRequiresUserAction API_DEPRECATED_WITH_REPLACEMENT("mediaTypesRequiringUserActionForPlayback", ios(8.0, 9.0));
+                               ^
+    /Users/apple/Dev/flutter/.pub-cache/hosted/pub.dartlang.org/webview_flutter-0.3.22+1/ios/Classes/FlutterWebView.m:374:23: warning: 'mediaPlaybackRequiresUserAction' is deprecated: first deprecated in iOS 9.0 [-Wdeprecated-declarations]
+            configuration.mediaPlaybackRequiresUserAction = false;
+                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                          mediaTypesRequiringUserActionForPlayback
+    In module 'WebKit' imported from /Users/apple/Dev/flutter/.pub-cache/hosted/pub.dartlang.org/webview_flutter-0.3.22+1/ios/Classes/FlutterWebView.h:6:
+    /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator14.4.sdk/System/Library/Frameworks/WebKit.framework/Headers/WKWebViewConfiguration.h:211:28: note: 'mediaPlaybackRequiresUserAction' has been explicitly marked deprecated here
+    @property (nonatomic) BOOL mediaPlaybackRequiresUserAction API_DEPRECATED_WITH_REPLACEMENT("mediaTypesRequiringUserActionForPlayback", ios(8.0, 9.0));
+                               ^
+    2 warnings generated.
+    /Users/apple/Dev/flutter/.pub-cache/hosted/pub.dartlang.org/receive_sharing_intent-1.4.2/ios/Classes/SwiftReceiveSharingIntentPlugin.swift:108:35: warning: value 'path' was defined but never used; consider replacing with boolean test
+                            guard let path = getAbsolutePath(for: $0.path) else {
+                                  ~~~~^~~~~~~
+                                                                           != nil
+    /Users/apple/Dev/flutter/.pub-cache/hosted/pub.dartlang.org/permission_handler-5.0.1+1/ios/Classes/strategies/PhotoPermissionStrategy.m:39:13: warning: enumeration value 'PHAuthorizationStatusLimited' not handled in switch [-Wswitch]
+        switch (authorizationStatus) {
+                ^
+    /Users/apple/Dev/flutter/.pub-cache/hosted/pub.dartlang.org/permission_handler-5.0.1+1/ios/Classes/strategies/PhotoPermissionStrategy.m:39:13: note: add missing switch cases
+        switch (authorizationStatus) {
+                ^
+    1 warning generated.
+    /Users/apple/Dev/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_pdfview-1.0.4/ios/Classes/FlutterPDFView.m:25:5: warning: 'FLTPDFViewController' is only available on iOS 11.0 or newer [-Wunguarded-availability-new]
+        FLTPDFViewController* pdfviewController = [[FLTPDFViewController alloc] initWithFrame:frame
+        ^~~~~~~~~~~~~~~~~~~~
+    In file included from /Users/apple/Dev/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_pdfview-1.0.4/ios/Classes/FlutterPDFView.m:4:
+    /Users/apple/Dev/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_pdfview-1.0.4/ios/Classes/FlutterPDFView.h:11:12: note: 'FLTPDFViewController' has been marked as being introduced in iOS 11.0 here, but the deployment target is iOS 9.0.0
+    @interface FLTPDFViewController : NSObject <FlutterPlatformView, PDFViewDelegate>
+               ^
+    /Users/apple/Dev/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_pdfview-1.0.4/ios/Classes/FlutterPDFView.m:25:5: note: enclose 'FLTPDFViewController' in an @available check to silence this warning
+        FLTPDFViewController* pdfviewController = [[FLTPDFViewController alloc] initWithFrame:frame
+        ^~~~~~~~~~~~~~~~~~~~
+    /Users/apple/Dev/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_pdfview-1.0.4/ios/Classes/FlutterPDFView.m:25:49: warning: 'FLTPDFViewController' is only available on iOS 11.0 or newer [-Wunguarded-availability-new]
+        FLTPDFViewController* pdfviewController = [[FLTPDFViewController alloc] initWithFrame:frame
+                                                    ^~~~~~~~~~~~~~~~~~~~
+    In file included from /Users/apple/Dev/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_pdfview-1.0.4/ios/Classes/FlutterPDFView.m:4:
+    /Users/apple/Dev/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_pdfview-1.0.4/ios/Classes/FlutterPDFView.h:11:12: note: 'FLTPDFViewController' has been marked as being introduced in iOS 11.0 here, but the deployment target is iOS 9.0.0
+    @interface FLTPDFViewController : NSObject <FlutterPlatformView, PDFViewDelegate>
+               ^
+    /Users/apple/Dev/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_pdfview-1.0.4/ios/Classes/FlutterPDFView.m:25:49: note: enclose 'FLTPDFViewController' in an @available check to silence this warning
+        FLTPDFViewController* pdfviewController = [[FLTPDFViewController alloc] initWithFrame:frame
+                                                    ^~~~~~~~~~~~~~~~~~~~
+    2 warnings generated.
+    /Users/apple/Dev/flutter/.pub-cache/hosted/pub.dartlang.org/audioplayers-0.15.1/darwin/Classes/AudioplayersPlugin.m:88:37: warning: incompatible pointer types sending 'FlutterEngine *' to parameter of type 'NSObject<FlutterBinaryMessenger> * _Nonnull' [-Wincompatible-pointer-types]
+                        binaryMessenger:_headlessEngine];
+                                        ^~~~~~~~~~~~~~~
+    In module 'Flutter' imported from /Users/apple/Dev/flutter/.pub-cache/hosted/pub.dartlang.org/audioplayers-0.15.1/darwin/Classes/AudioplayersPlugin.h:2:
+    /Users/apple/AndroidStudioProjects/bookkart/ios/Flutter/Flutter.framework/Headers/FlutterChannels.h:178:74: note: passing argument to parameter 'messenger' here
+                          binaryMessenger:(NSObject<FlutterBinaryMessenger>*)messenger;
+                                                                             ^
+    1 warning generated.
+    /Users/apple/Dev/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_downloader-1.5.2/ios/Classes/FlutterDownloaderPlugin.m:373:15: warning: 'stringByReplacingPercentEscapesUsingEncoding:' is deprecated: first deprecated in iOS 9.0 - Use -stringByRemovingPercentEncoding instead, which always uses the recommended UTF-8 encoding. [-Wdeprecated-declarations]
+        ? [origin stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]
+                  ^
+    In module 'Foundation' imported from /Users/apple/Dev/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_downloader-1.5.2/ios/Classes/DBManager.h:8:
+    /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator14.4.sdk/System/Library/Frameworks/Foundation.framework/Headers/NSURL.h:596:1: note: 'stringByReplacingPercentEscapesUsingEncoding:' has been explicitly marked deprecated here
+    - (nullable NSString *)stringByReplacingPercentEscapesUsingEncoding:(NSStringEncoding)enc API_DEPRECATED("Use -stringByRemovingPercentEncoding instead, which always uses the recommended UTF-8 encoding.", macos(10.0,10.11), ios(2.0,9.0), watchos(2.0,2.0), tvos(9.0,9.0));
+    ^
+    1 warning generated.
+    /Users/apple/AndroidStudioProjects/bookkart/ios/Pods/AEXML/Sources/AEXML/Element.swift:324:5: warning: 'public' modifier is redundant for property declared in a public extension
+        public var xmlEscaped: String {
+        ^~~~~~~
+
+    /Users/apple/Dev/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_analytics-5.0.11/ios/Classes/FLTFirebaseAnalyticsPlugin.m:57:19: warning: 'setScreenName:screenClass:' is deprecated: Use +[FIRAnalytics logEventWithName:kFIREventScreenView parameters:] instead. [-Wdeprecated-declarations]
+        [FIRAnalytics setScreenName:screenName screenClass:screenClassOverride];
+                      ^
+    In module 'FirebaseAnalytics' imported from /Users/apple/AndroidStudioProjects/bookkart/ios/Pods/Headers/Public/Firebase/Firebase.h:22:
+    /Users/apple/AndroidStudioProjects/bookkart/ios/Pods/FirebaseAnalytics/Frameworks/FirebaseAnalytics.framework/Headers/FIRAnalytics.h:115:5: note: 'setScreenName:screenClass:' has been explicitly marked deprecated here
+        DEPRECATED_MSG_ATTRIBUTE(
+        ^
+    In module 'UIKit' imported from /Users/apple/AndroidStudioProjects/bookkart/ios/Pods/Target Support Files/firebase_analytics/firebase_analytics-prefix.pch:2:
+    In module 'Foundation' imported from /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator14.4.sdk/System/Library/Frameworks/UIKit.framework/Headers/UIKit.h:8:
+    In module 'CoreFoundation' imported from /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator14.4.sdk/System/Library/Frameworks/Foundation.framework/Headers/Foundation.h:6:
+    In module 'Darwin' imported from /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator14.4.sdk/System/Library/Frameworks/CoreFoundation.framework/Headers/CoreFoundation.h:16:
+    /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator14.4.sdk/usr/include/AvailabilityMacros.h:183:64: note: expanded from macro 'DEPRECATED_MSG_ATTRIBUTE'
+                #define DEPRECATED_MSG_ATTRIBUTE(s) __attribute__((deprecated(s)))
+                                                                   ^
+    1 warning generated.
+    /Users/apple/AndroidStudioProjects/bookkart/ios/Pods/epub_kitty_ios/Source/FolioReaderAddHighlightNote.swift:152:13: warning: variable 'userInfo' was never mutated; consider changing to 'let' constant
+            var userInfo = notification.userInfo!
+            ~~~ ^
+            let
+    /Users/apple/AndroidStudioProjects/bookkart/ios/Pods/epub_kitty_ios/Source/FolioReaderCenter.swift:1266:44: warning: string interpolation produces a debug description for an optional value; did you mean to make this explicit?
+                text = "\(chapterName)\n\n“\(chapterText)” \n\n\(bookTitle) \n\(self.readerConfig.localizedShareBy) \(authorName)"
+    /Users/apple/AndroidStudioProjects/bookkart/ios/Pods/epub_kitty_ios/Source/FolioReaderCenter.swift:1266:44: note: use 'String(describing:)' to silence this warning
+                text = "\(chapterName)\n\n“\(chapterText)” \n\n\(bookTitle) \n\(self.readerConfig.localizedShareBy) \(authorName)"
+    /Users/apple/AndroidStudioProjects/bookkart/ios/Pods/epub_kitty_ios/Source/FolioReaderCenter.swift:1266:44: note: provide a default value to avoid this warning
+                text = "\(chapterName)\n\n“\(chapterText)” \n\n\(bookTitle) \n\(self.readerConfig.localizedShareBy) \(authorName)"
+    /Users/apple/AndroidStudioProjects/bookkart/ios/Pods/epub_kitty_ios/Source/FolioReaderAddHighlightNote.swift:152:13: warning: variable 'userInfo' was never mutated; consider changing to 'let' constant
+            var userInfo = notification.userInfo!
+            ~~~ ^
+            let
+    /Users/apple/AndroidStudioProjects/bookkart/ios/Pods/epub_kitty_ios/Source/FolioReaderCenter.swift:1266:44: warning: string interpolation produces a debug description for an optional value; did you mean to make this explicit?
+                text = "\(chapterName)\n\n“\(chapterText)” \n\n\(bookTitle) \n\(self.readerConfig.localizedShareBy) \(authorName)"
+    /Users/apple/AndroidStudioProjects/bookkart/ios/Pods/epub_kitty_ios/Source/FolioReaderCenter.swift:1266:44: note: use 'String(describing:)' to silence this warning
+                text = "\(chapterName)\n\n“\(chapterText)” \n\n\(bookTitle) \n\(self.readerConfig.localizedShareBy) \(authorName)"
+    /Users/apple/AndroidStudioProjects/bookkart/ios/Pods/epub_kitty_ios/Source/FolioReaderCenter.swift:1266:44: note: provide a default value to avoid this warning
+                text = "\(chapterName)\n\n“\(chapterText)” \n\n\(bookTitle) \n\(self.readerConfig.localizedShareBy) \(authorName)"
+    /Users/apple/AndroidStudioProjects/bookkart/ios/Pods/epub_kitty_ios/Source/FolioReaderPage.swift:70:30: warning: instance will be immediately deallocated because property 'readerContainer' is 'weak'
+            self.readerContainer = FolioReaderContainer(withConfig: FolioReaderConfig(), folioReader: FolioReader(), epubPath: "")
+                                 ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    /Users/apple/AndroidStudioProjects/bookkart/ios/Pods/epub_kitty_ios/Source/FolioReaderPage.swift:70:30: note: a strong reference is required to prevent the instance from being deallocated
+            self.readerContainer = FolioReaderContainer(withConfig: FolioReaderConfig(), folioReader: FolioReader(), epubPath: "")
+                                 ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    /Users/apple/AndroidStudioProjects/bookkart/ios/Pods/epub_kitty_ios/Source/FolioReaderPage.swift:41:14: note: 'readerContainer' declared here
+        weak var readerContainer: FolioReaderContainer?
+                 ^
+    /Users/apple/AndroidStudioProjects/bookkart/ios/Pods/epub_kitty_ios/Source/Models/Highlight+Helper.swift:93:19: warning: 'add(_:update:)' is deprecated: Pass .error, .modified or .all rather than a boolean. .error is equivalent to false and .all is equivalent to true.
+                realm.add(self, update: true)
+                      ^
+    /Users/apple/AndroidStudioProjects/bookkart/ios/Pods/FolioReaderKit/Source/FolioReaderAddHighlightNote.swift:152:13: warning: variable 'userInfo' was never mutated; consider changing to 'let' constant
+            var userInfo = notification.userInfo!
+            ~~~ ^
+            let
+    /Users/apple/AndroidStudioProjects/bookkart/ios/Pods/FolioReaderKit/Source/FolioReaderPage.swift:69:30: warning: instance will be immediately deallocated because property 'readerContainer' is 'weak'
+            self.readerContainer = FolioReaderContainer(withConfig: FolioReaderConfig(), folioReader: FolioReader(), epubPath: "")
+                                 ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    /Users/apple/AndroidStudioProjects/bookkart/ios/Pods/FolioReaderKit/Source/FolioReaderPage.swift:69:30: note: a strong reference is required to prevent the instance from being deallocated
+            self.readerContainer = FolioReaderContainer(withConfig: FolioReaderConfig(), folioReader: FolioReader(), epubPath: "")
+                                 ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    /Users/apple/AndroidStudioProjects/bookkart/ios/Pods/FolioReaderKit/Source/FolioReaderPage.swift:40:14: note: 'readerContainer' declared here
+        weak var readerContainer: FolioReaderContainer?
+                 ^
+    /Users/apple/AndroidStudioProjects/bookkart/ios/Pods/FolioReaderKit/Source/Models/Highlight+Helper.swift:93:19: warning: 'add(_:update:)' is deprecated: Pass .error, .modified or .all rather than a boolean. .error is equivalent to false and .all is equivalent to true.
+                realm.add(self, update: true)
+                      ^
+    error: unable to read property list from file: /Users/apple/AndroidStudioProjects/bookkart/ios/Runner/Info.plist: The operation couldn’t be completed. (XCBUtil.PropertyListConversionError error 1.) (in target 'Runner' from project 'Runner')
+    note: Using new build system
+    note: Building targets in parallel
+    note: Planning build
+    note: Using build description from disk
+
+Could not build the application for the simulator.
+Error launching application on iPhone 11.

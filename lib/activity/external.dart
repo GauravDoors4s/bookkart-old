@@ -70,7 +70,8 @@ class _ExternalState extends State<External> {
         scrollDirection: EpubScrollDirection.VERTICAL,
         allowSharing: true,
         enableTts: true,
-        nightMode: false);
+        // nightMode: false
+    );
     EpubViewer.open(
       _sharedText,
     );

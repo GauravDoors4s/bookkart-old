@@ -449,7 +449,8 @@ class ViewEPubFileNewState extends State<ViewEPubFileNew> {
           scrollDirection: EpubScrollDirection.VERTICAL,
           allowSharing: true,
           enableTts: true,
-          nightMode: false);
+          // nightMode: false
+      );
 
       var epubLocator = EpubLocator();
       String locatorPref = await getString('locator');

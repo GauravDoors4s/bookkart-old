@@ -10,7 +10,7 @@ import 'package:flushbar/flushbar.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:epub_viewer/epub_viewer.dart';
 import 'package:ext_storage/ext_storage.dart';
-import 'package:pdftron_flutter/pdftron_flutter.dart';
+// import 'package:pdftron_flutter/pdftron_flutter.dart';
 import '../activity/AudioBookPlayer.dart';
 import '../activity/VideoBookPlayer.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
@@ -360,7 +360,7 @@ class _LocalFilesState extends State<LocalFiles> with WidgetsBindingObserver {
 
   }*/
   void openPdf(BuildContext context, String fileUrl) {
-    /* PDFView(
+     PDFView(
       filePath: fileUrl,
       pageSnap: false,
       swipeHorizontal: true,
@@ -373,8 +373,8 @@ class _LocalFilesState extends State<LocalFiles> with WidgetsBindingObserver {
         });
       },
       defaultPage: currentPage,
-    );*/
-    PdftronFlutter.openDocument(fileUrl,);
+    );
+    // PdftronFlutter.openDocument(fileUrl,);
   }
 
   Future<void> openEpub(BuildContext context, String fileUrl) async {
@@ -386,7 +386,8 @@ class _LocalFilesState extends State<LocalFiles> with WidgetsBindingObserver {
         scrollDirection: EpubScrollDirection.VERTICAL,
         allowSharing: true,
         enableTts: true,
-        nightMode: false);
+        // nightMode: false
+    );
 
     var epubLocator = EpubLocator();
     String locatorPref = await getString('locator');

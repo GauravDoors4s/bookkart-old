@@ -514,7 +514,8 @@ readFile(context,String mBookId, String filePath, String name, {isCloseApp = tru
         scrollDirection: EpubScrollDirection.VERTICAL,
         allowSharing: true,
         enableTts: true,
-        nightMode: false);
+        // nightMode: false
+    );
 
     var epubLocator = EpubLocator();
     String locatorPref = await getString('locator');
